@@ -1,0 +1,40 @@
+<div class="content">
+
+    <h2 class="subtitle is-4"><%=quiz.subject%> - <%=quiz.desc%></h2>
+
+    <div class="columns">
+        <div class="column is-two-thirds">
+            <form method="post" action="/quizzes/<%=quiz.id%>/check?_method=PUT">
+
+                    <ul>
+
+                        <li>
+                            <h3 class="subtitle is-5"><%=quiz.question%></h3>
+                                <div class="control">
+                                  <p><label class="radio">
+                                    <input type="radio" name="answer" value="1">
+                                    <%= quiz.answer1 %>
+                                  </label></p>
+                                  <p><label class="radio">
+                                    <input type="radio" name="answer" value="2">
+                                    <%= quiz.answer2 %>
+                                  </label></p>
+                                  <p><label class="radio">
+                                    <input type="radio" name="answer" value="3">
+                                    <%= quiz.answer3 %>
+                                  </label></p>
+                                  <p><label class="radio">
+                                    <input type="radio" name="answer" value="4">
+                                    <%= quiz.answer4 %>
+                                  </label></p>
+                                </div>
+                            <input type="submit" class="button is-success" value="Check">
+                            <a href="/goback" class="button is-info">Go Back</a>
+                        </li>
+
+                    </ul>
+
+            </form>
+        </div>
+    </div>
+</div>

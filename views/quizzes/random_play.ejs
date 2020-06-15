@@ -1,0 +1,38 @@
+<div class="content">
+    <div class="columns">
+        <div class="column">
+             <h2 class="subtitle is-4">Random Play</h2>
+             <h2 class="subtitle is-5">Pregunta de <%= quiz.subject %>: <%= quiz.desc %></h2>
+        </div>
+
+        <div class="column is-two-thirds">
+            <progress class="progress is-success" value="<%= score %>" max="<%= session.nquizzes %>"></progress>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-two-thirds">
+            <form method="post" action="/quizzes/randomcheck/<%=quiz.id%>?_method=PUT">
+                  <ul>
+
+                      <li>
+                          <span class="tag is-dark is-medium"><%=quiz.question%></span>
+                          <div class="control">
+                            <div class="select">
+                              <select name="answer">
+                                <option><%= quiz.answer1 %></option>
+                                <option><%= quiz.answer2 %></option>
+                                <option><%= quiz.answer3 %></option>
+                                <option><%= quiz.answer4 %></option>
+                              </select>
+                            </div>
+                          </div>
+                          <input type="submit" class="button is-success" value="Check">
+                          <a href="/goback" class="button is-info">Go Back</a>
+                      </li>
+
+                  </ul>
+            </form>
+        </div>
+    </div>
+</div>

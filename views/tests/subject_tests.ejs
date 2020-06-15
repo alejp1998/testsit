@@ -1,0 +1,20 @@
+<div class="content">
+
+  <div class="columns">
+    <div class="column">
+      <h1 class="title is-1">Tests de <%=subject%></h1>
+    </div>
+  </div>
+
+  <ul>
+    <% for (var i in descs) { %>
+    <% var desc = descs[i]; %>
+        <li>
+
+          <a href="/tests/<%=subject%>/<%=desc%>" class="subtitle is-3"><%=desc%></a>
+          <a href="/tests/<%=subject%>/<%=desc%>" class="button is-warning is-medium">Intentar</a>
+          <a href="/tests/<%=subject%>/<%=desc%>/solved" class="button is-primary is-medium">Solución</a>
+
+        </li>
+    <% } %>
+  </ul>

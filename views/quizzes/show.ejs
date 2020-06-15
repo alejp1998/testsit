@@ -1,0 +1,36 @@
+<div class="content">
+	<div class="columns">
+		<div class="column is-two-thirds">
+			<h2 class="subtitle is-4">Pregunta de <%= quiz.subject %>: <%= quiz.desc %></h2>
+		</div>
+	</div>
+
+    <div class="columns">
+
+        <div class="column">
+            <span class="tag is-dark is-medium">Pregunta:</span>
+            <p class="subtitle is-4"><%= quiz.question %></p>
+
+            <span class="tag is-success is-medium">Respuesta:  </span>
+            <p class="subtitle is-4"><%=answer%></p>
+
+            <span class="tag is-info is-medium">Posibles respuestas:</span>
+            <ul>
+                <li>
+                    <p class="subtitle is-4"><%= quiz.answer1 %></p>
+                </li>
+                <li>
+                    <p class="subtitle is-4"><%= quiz.answer2 %></p>
+                </li>
+                <li>
+                    <p class="subtitle is-4"><%= quiz.answer3 %></p>
+                </li>
+                <li>
+                    <p class="subtitle is-4"><%= quiz.answer4 %></p>
+                </li>
+            </ul>
+            <a href="/goback" class="button is-info">Volver</a>
+        </div>
+
+    </div>
+</div>

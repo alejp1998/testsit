@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>(T)E(S)TSIT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <link href='https://fonts.googleapis.com/css?family=Megrim' rel='stylesheet'>
+    
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+
+    <style>
+        .logo1 {
+            font-family: 'Megrim';font-size: 40px;
+        }
+        .logo {
+            font-family: 'Megrim';font-size: 25px;
+        }
+        .navlogo {
+            background: linear-gradient(to left,#16A085,#48C9B0);
+        }
+    </style>
+
+</head>
+
+<body class="body">
+
+<nav class="navbar navlogo logo" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item logo1" href="/">(T)E(S)TSIT</a>
+    <div class="navbar-burger burger" data-target="navMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div id="navMenu" class="navbar-menu">
+
+    <div class="navbar-start">
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/quizzes">Tests (por curso)</a>
+        <div class="navbar-dropdown is-boxed">
+            <a class="navbar-item" href="/tests/primero">Primero</a>
+            <a class="navbar-item" href="/tests/segundo">Segundo</a>
+            <a class="navbar-item" href="/tests/tercero">Tercero</a>
+            <a class="navbar-item" href="/tests/cuarto">Cuarto</a>
+        </div>
+      </div>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="/users">Usuarios</a>
+        <div class="navbar-dropdown is-boxed">
+            <% if (!session.user){ %>
+                <a class="navbar-item" href="/login">Inicia Sesión</a>
+                <a class="navbar-item" href="/signup">Nueva Cuenta</a>
+            <% }else{ %>
+                <a class="navbar-item" href="/users/<%= session.user.id %>" ><%= session.user.username%></a>
+                <a class="navbar-item" href="/logout">Cerrar Sesión</a>
+            <% } %>
+        </div>
+      </div>
+
+      <a class="navbar-item" href="/credits">Créditos</a>
+
+    </div>
+
+    <div class="navbar-end">
+
+      <div class="navbar-item">
+        <div class="field is-grouped">
+
+          <p class="control">
+            <a class="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet" target="_blank" href="https://twitter.com/intent/tweet?text=(T)E(S)TSIT: brrrrrrrrrrrrrrrrrrrr">
+              <span class="icon">
+                <i class="fab fa-twitter"></i>
+              </span>
+              <span>
+                Tweet
+              </span>
+            </a>
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</nav>
+
+<script type="text/javascript">
+  (function() {
+    var burger = document.querySelector('.burger');
+    var nav = document.querySelector('#'+burger.dataset.target);
+    burger.addEventListener('click', function(){
+      burger.classList.toggle('is-active');
+      nav.classList.toggle('is-active');
+    });
+  })();
+</script>
+
+<section class="hero">
+    <% if (messages.info) { %>
+        <div class='hero is-info'>
+            <h3 class="subtitle">Info:</h3>
+            <ul>
+                <% for (var i in messages.info) { %>
+                    <li> <%= messages.info[i] %> </li>
+                <% } %>
+            </ul>
+        </div>
+    <% } %>
+
+    <% if (messages.success) { %>
+        <div class='hero is-success'>
+            <h3 class="subtitle">Tasks completed successfully:</h3>
+            <ul>
+                <% for (var i in messages.success) { %>
+                    <li> <%= messages.success[i] %> </li>
+                <% } %>
+            </ul>
+        </div>
+    <% } %>
+
+    <% if (messages.error) { %>
+        <div class='hero is-danger'>
+            <h3 class="subtitle">Errors:</h3>
+            <ul>
+                <% for (var i in messages.error) { %>
+                    <li> <%= messages.error[i] %> </li>
+                <% } %>
+            </ul>
+        </div>
+    <% } %>
+
+    <div class="hero-body">
+        <%- body %>
+        <% if (locals.paginate_control) { %>
+          <%- paginate_control %>
+        <% } %>
+    </div>
+
+</section>
+
+</div>
+
+<footer class="footer">
+  <div class="box has-text-centered">
+    <a class='subtitle is-6' href="https://moodle.upm.es/titulaciones/oficiales/login/login.php">No estás seguro de la respuesta? Haber estudiao</a>
+  </div>
+</footer>
+
+</body>
+</html>
