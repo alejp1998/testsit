@@ -49,7 +49,7 @@ router.put('/quizzes/randomplay',quizController.randomPlay);
 router.put('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomCheck);
 router.put('/quizzes/:quizId(\\d+)/check',sessionController.loginRequired,quizController.checkQuiz);
 /*POST quizzes*/
-router.post('/quizzes',sessionController.loginRequired, quizController.addQuiz);
+router.post('/quizzes',sessionController.adminRequired, quizController.addQuiz);
 /*DELETE quizzes*/
 router.delete('/quizzes/:quizId(\\d+)', quizController.adminOrAuthorRequired, quizController.deleteQuiz);
 
@@ -59,12 +59,15 @@ router.get('/tests/segundo', quizController.segundo);
 router.get('/tests/tercero', quizController.tercero);
 router.get('/tests/cuarto', quizController.cuarto);
 router.get('/tests/:subject',quizController.subjectTests);
-router.get('/tests/:subject/:desc',quizController.playTest);
-router.get('/tests/:subject/:desc/solved',quizController.solvedTest);
+router.get('/newtest/:subject',quizController.addTestForm);
+router.get('/tests/:subject/:testid',quizController.playTest);
+router.get('/tests/:subject/:testid/solved',quizController.solvedTest);
+
 /*PUT tests*/
 router.put('/tests/:subject/:desc',quizController.checkTest);
 /*POST tests*/
-
+router.post('/addtest/:subject',sessionController.adminRequired, quizController.addTest);
+router.post('/newtest/:subject',sessionController.adminRequired, quizController.addTestQuestions);
 /*DELETE tests*/
 
 /*------- USERS ROUTES --------*/

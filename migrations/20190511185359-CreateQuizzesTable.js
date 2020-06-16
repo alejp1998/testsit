@@ -12,7 +12,14 @@ module.exports = {
             autoIncrement: true,
             unique: true
           },
+          testid: {
+              type: Sequelize.STRING,
+              validate: {notEmpty: {msg: "Subject must not be empty"}}
+          },
           course: Sequelize.INTEGER,
+          semester: Sequelize.INTEGER,
+          year: Sequelize.INTEGER,
+          month: Sequelize.INTEGER,
           subject: {
               type: Sequelize.STRING,
               validate: {notEmpty: {msg: "Subject must not be empty"}}
@@ -25,6 +32,7 @@ module.exports = {
             type: Sequelize.TEXT,
             validate: {notEmpty: {msg: "Question must not be empty."}}
           },
+          image: Sequelize.STRING,
           answer: {
             type: Sequelize.INTEGER,
             validate: {notEmpty: {msg: "Answer must not be empty."}}

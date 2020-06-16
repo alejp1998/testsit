@@ -2,10 +2,29 @@
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('quiz',
         {
-            course: DataTypes.INTEGER,
+            testid: {
+                type: DataTypes.STRING,
+                validate: {notEmpty: {msg: "Testid must not be empty"}}
+            },
             subject: {
                 type: DataTypes.STRING,
                 validate: {notEmpty: {msg: "Subject must not be empty"}}
+            },
+            course: {
+                type: DataTypes.INTEGER,
+                validate: {notEmpty: {msg: "Course must not be empty"}}
+            },
+            semester: {
+                type: DataTypes.INTEGER,
+                validate: {notEmpty: {msg: "Semester must not be empty"}}
+            },
+            year: {
+                type: DataTypes.INTEGER,
+                validate: {notEmpty: {msg: "Year must not be empty"}}
+            },
+            month: {
+                type: DataTypes.INTEGER,
+                validate: {notEmpty: {msg: "Month must not be empty"}}
             },
             desc: {
                 type: DataTypes.STRING,

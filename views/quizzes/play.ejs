@@ -1,38 +1,68 @@
 <div class="content">
 
-    <h2 class="subtitle is-4"><%=quiz.subject%> - <%=quiz.desc%></h2>
+    <div class="box">
+      <div class="columns">
+          <div class="column">
+          <p class="subtitle is-2">
+              Test Id: <%=testid%>
+          </p>
+          </div>
+          <div class="column is-narrow">
+          <a href="/tests/<%=subject%>"><%=subject%></a>
+          </div>
+      </div>
+      <div class="columns">
+          <div class="column">
+              <p class="subtitle is-4">Descripción: <%=desc%></p>
+          </div>
+          <div class="column is-narrow">
+              <span class="tag has-background-warning is-large">INTENTAR PREGUNTA</span>
+          </div>
+      </div>
+    </div>
 
     <div class="columns">
-        <div class="column is-two-thirds">
+        <div class="column">
             <form method="post" action="/quizzes/<%=quiz.id%>/check?_method=PUT">
 
-                    <ul>
+                <div class="box">
+                  <h3 class="subtitle is-4"><%=quiz.question%></h3>
+                      <div class="control">
+                        <% if(quiz.answer1){ %>
+                        <p class="subtitle is-5"><label class="radio">
+                          <input type="radio" name="answer" value="1">
+                          <b>A.</b>  <%=quiz.answer1%>
+                        </label></p>
+                        <% } %>
+                        <% if(quiz.answer2){ %>
+                        <p class="subtitle is-5"><label class="radio">
+                          <input type="radio" name="answer" value="2">
+                          <b>B.</b>  <%=quiz.answer2%>
+                        </label></p>
+                        <% } %>
+                        <% if(quiz.answer3){ %>
+                        <p class="subtitle is-5"><label class="radio">
+                          <input type="radio" name="answer" value="3">
+                          <b>C.</b>  <%=quiz.answer3%>
+                        </label></p>
+                        <% } %>
+                        <% if(quiz.answer4){ %>
+                        <p class="subtitle is-5"><label class="radio">
+                          <input type="radio" name="answer" value="4">
+                          <b>D.</b>  <%=quiz.answer4%>
+                        </label></p>
+                        <% } %>
+                        <br>
+                        <p class="subtitle is-5"><label class="radio">
+                          <input type="radio" name="answer" value="0" checked>
+                          <b>Omitir</b>
+                        </label></p>
+                      </div>
+                  <br>
+                </div>
 
-                        <li>
-                            <h3 class="subtitle is-5"><%=quiz.question%></h3>
-                                <div class="control">
-                                  <p><label class="radio">
-                                    <input type="radio" name="answer" value="1">
-                                    <%= quiz.answer1 %>
-                                  </label></p>
-                                  <p><label class="radio">
-                                    <input type="radio" name="answer" value="2">
-                                    <%= quiz.answer2 %>
-                                  </label></p>
-                                  <p><label class="radio">
-                                    <input type="radio" name="answer" value="3">
-                                    <%= quiz.answer3 %>
-                                  </label></p>
-                                  <p><label class="radio">
-                                    <input type="radio" name="answer" value="4">
-                                    <%= quiz.answer4 %>
-                                  </label></p>
-                                </div>
-                            <input type="submit" class="button is-success" value="Check">
-                            <a href="/goback" class="button is-info">Go Back</a>
-                        </li>
-
-                    </ul>
+                <input type="submit" class="button is-success" value="Check">
+                <a href="/goback" class="button is-info">Go Back</a>
 
             </form>
         </div>

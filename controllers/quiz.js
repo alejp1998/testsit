@@ -118,16 +118,16 @@ exports.cuarto = (req, res, next) => {
 //descripciones de estos, que se mostrarán en una lista.
 exports.subjectTests = (req, res, next) => {
   const subject = req.params.subject;
-  let descs = [];
+  let testids = [];
   models.quiz.findAll({
     where: {subject: subject}
   }).then(quizzes => {
     for (var i in quizzes){
-      if (!descs.includes(quizzes[i].desc)){
-        descs.push(quizzes[i].desc)
+      if (!testids.includes(quizzes[i].testid)){
+        testids.push(quizzes[i].testid)
       }
     }
-    res.render('tests/subject_tests.ejs', {subject,descs} );
+    res.render('tests/subject_tests.ejs', {subject,testids} );
   }).catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);
     next(error);
@@ -137,21 +137,22 @@ exports.subjectTests = (req, res, next) => {
 
 
 //GET /tests/:subject/:desc
-//Se deben precargar todas las preguntas que pertenezcan a una descripción y
+//Se deben precargar todas las preguntas que pertenezcan a un testid y
 //asignatura en una lista, que se deberá mostrar posteriormente como si de un
 //test de moodle se tratase, para finalmente ser corregidas
 exports.playTest = (req, res, next) => {
   const subject = req.params.subject;
-  const desc = req.params.desc;
+  const testid = req.params.testid;
   let test = [];
   models.quiz.findAll({
     where: {subject: subject,
-            desc: desc},
+            testid: testid},
     order: [Sequelize.fn( 'RANDOM' ),]
   }).then(questions => {
     test = questions;
+    desc = test[0].desc;
     req.session.test = test;
-    res.render('tests/play_test.ejs', {subject,desc,test} );
+    res.render('tests/play_test.ejs', {subject,testid,desc,test} );
   }).catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);
     next(error);
@@ -163,20 +164,94 @@ exports.playTest = (req, res, next) => {
 //Carga el test con sus respuestas correctas
 exports.solvedTest = (req, res, next) => {
   const subject = req.params.subject;
-  const desc = req.params.desc;
+  const testid = req.params.testid;
   let test = [];
+  let desc;
   models.quiz.findAll({
     where: {subject: subject,
-            desc: desc},
-    order: [Sequelize.fn( 'RANDOM' ),]
+            testid: testid}
   }).then(questions => {
     test = questions;
+    desc = test[0].desc;
     req.session.test = test;
-    res.render('tests/solved_test.ejs', {subject,desc,test} );
+    res.render('tests/solved_test.ejs', {subject,testid,desc,test} );
   }).catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);
     next(error);
   });
+};
+
+
+//GET /newtest/:subject/
+//Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
+exports.addTestForm = (req, res, next) => {
+  const subject = req.params.subject;
+	res.render('tests/newtest1.ejs', {subject} );
+};
+
+
+//POST /newtest/:subject/
+//Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
+exports.addTestQuestions = (req, res, next) => {
+  const subject = req.params.subject;
+  const testid = req.body.testid;
+  const year = req.body.year;
+  const month = req.body.month;
+  const desc = req.body.desc;
+  const npreg = req.body.npreg;
+	res.render('tests/newtest2.ejs', {subject,testid,year,month,desc,npreg} );
+};
+
+//POST /addtest/:subject/
+exports.addTest = (req, res, next) => {
+  let test = [];
+
+  const subject = req.params.subject;
+  const desc = req.body.desc;
+  const testid = req.body.testid;
+  const year = req.body.year;
+  const month = req.body.month;
+
+  const questions = req.body.question
+  const answers = req.body.answer
+  const answers1 = req.body.answer1 
+  const answers2 = req.body.answer2
+  const answers3 = req.body.answer3 
+  const answers4 = req.body.answer4 
+
+  //Create test
+  for (var i in questions){
+    test_question = {
+      subject: subject,
+      desc: desc,
+      testid: testid,
+      year: year,
+      month: month,
+      question: questions[i],
+      answer: Number(answers[i]),
+      answer1: answers1[i],
+      answer2: answers2[i],
+      answer3: answers3[i],
+      answer4: answers4[i]
+    }
+    test.push(test_question);
+    console.log(test_question);
+  }
+
+  models.quiz.bulkCreate(test)
+		.then(() => {
+			req.flash('success', 'Test added succesfully');
+			res.redirect('/tests/' + subject);
+		})
+		.catch(Sequelize.ValidationError, error => {
+			req.flash('error', 'There are errors in the form:');
+			error.errors.forEach(({message}) => req.flash('error', message));
+			res.render('quizzes/new', {test});
+		})
+		.catch(error => {
+			req.flash('error', 'Error adding the Quiz: ' + error.message);
+			next(error);
+		});
 };
 
 
@@ -187,11 +262,14 @@ exports.solvedTest = (req, res, next) => {
 exports.checkTest = (req, res, next) => {
   const test = req.session.test;
   const subject = req.params.subject;
-  const desc = req.params.desc;
+  let desc;
+  let testid;
   let correct = 0;
   let incorrect = 0;
   let nonanswered = 0;
 
+  testid = test[0].testid;
+  desc = test[0].desc;
 
   //Creamos array que obtiene las respuestas que hemos dado del quiz
   let answers = [];
@@ -347,7 +425,7 @@ exports.checkTest = (req, res, next) => {
   }
 
   for(var i in test){
-    if(answers[i] === ''){
+    if(answers[i] === '0'){
       test[i].result = 'nonanswered';
       nonanswered++;
     }else if( Number(test[i].answer) === Number(answers[i]) ){
@@ -359,18 +437,22 @@ exports.checkTest = (req, res, next) => {
     }
   }
 
-  res.render('tests/result_test.ejs', {test,answers,subject,desc,correct,incorrect,nonanswered} );
+  res.render('tests/result_test.ejs', {test,answers,subject,testid,desc,correct,incorrect,nonanswered} );
 };
 
 
 
 //GET /quizzes/:quizId/play
 exports.playQuiz = (req, res, next) => {
-	const quiz = req.quiz;
+  const quiz = req.quiz;
+  const testid = quiz.testid
+  const subject = quiz.subject;
+  const desc = quiz.desc;
+
 	if(!quiz){
 		res.render(`El quiz ${req.params.quizId} no existe.`);
 	}else{
-		res.render('quizzes/play.ejs', {quiz} );
+		res.render('quizzes/play.ejs', {quiz,subject,testid,desc} );
 	}
 };
 
@@ -385,7 +467,7 @@ exports.checkQuiz = (req, res, next) => {
 	if(Number(quiz.answer) === Number(answer)){
 		result = "Correct";
 	}else{
-		result = "Incorrect" + answer;
+		result = "Incorrect";
 	}
 
 	if(req.session.user){
@@ -408,11 +490,15 @@ exports.checkQuiz = (req, res, next) => {
 
 //GET /quizzes/:quizId/edit
 exports.editQuiz = (req, res, next) => {
-	const quiz = req.quiz;
+  const quiz = req.quiz;
+  const testid = quiz.testid
+  const subject = quiz.subject;
+  const desc = quiz.desc;
+  
 	if(!quiz){
 		res.render(`El quiz ${req.params.quizId} no existe.`);
 	}else{
-		res.render('quizzes/edit.ejs', {quiz} );
+		res.render('quizzes/edit.ejs', {quiz,subject,testid,desc} );
 	}
 };
 

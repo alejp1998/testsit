@@ -4,17 +4,37 @@
     <div class="column">
       <h1 class="title is-1">Tests de <%=subject%></h1>
     </div>
+    <% var isAdmin = session.user && session.user.isAdmin; %>
+    <% if(isAdmin){%>
+    <div class="column is-narrow">
+      <a href="/newtest/<%=subject%>" class="button is-success is-large">Añadir test</a>
+    </div>
+    <% } %>
+    
   </div>
 
-  <ul>
-    <% for (var i in descs) { %>
-    <% var desc = descs[i]; %>
-        <li>
+    <% for (var i in testids) { %>
+    <% var testid = testids[i]; %>
 
-          <a href="/tests/<%=subject%>/<%=desc%>" class="subtitle is-3"><%=desc%></a>
-          <a href="/tests/<%=subject%>/<%=desc%>" class="button is-warning is-medium">Intentar</a>
-          <a href="/tests/<%=subject%>/<%=desc%>/solved" class="button is-primary is-medium">Solución</a>
+      <div class="box is-info">
+          <div class="columns">
+            <div class="column">
+              <a href="/tests/<%=subject%>/<%=testid%>" class="is-size-3"><%=testid%></a>
+            </div>
+            <div class="column is-narrow">
+              <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-primary is-medium">Solución</a>
+            </div>
 
-        </li>
+            <% if(isAdmin){%>
+            <div class="column is-narrow">
+              <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-warning is-medium">Editar</a>
+            </div>
+            <div class="column is-narrow">
+              <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-danger is-medium">Eliminar</a>
+            </div>
+            <% } %>
+            
+          </div>
+      </div>
+
     <% } %>
-  </ul>

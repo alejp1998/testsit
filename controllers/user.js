@@ -53,7 +53,7 @@ exports.index = (req, res, next) => {
 // GET /users/:userId
 exports.show = (req, res, next) => {
     const {user} = req;
-    res.render('users/show', {user,followers,following});
+    res.render('users/show', {user});
     //Show magic methods
     //console.log(Object.keys(user.__proto__));
 };

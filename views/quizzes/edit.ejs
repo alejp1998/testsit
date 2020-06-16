@@ -1,49 +1,84 @@
 <div class="content">
-  <h2 class="subtitle is-4">Editar Pregunta:</h2>
+
+  <div class="box is-info">
+      <div class="columns">
+          <div class="column">
+          <p class="subtitle is-2">
+              Test Id: <%=testid%>
+          </p>
+          </div>
+          <div class="column is-narrow">
+          <a href="/tests/<%=subject%>"><%=subject%></a>
+          </div>
+      </div>
+      <div class="columns">
+          <div class="column">
+              <p class="subtitle is-4">Descripción: <%=desc%></p>
+          </div>
+          <div class="column is-narrow">
+              <span class="tag has-text-white has-background-info is-large">EDITAR PREGUNTA</span>
+          </div>
+      </div>
+  </div>
 
   <form method="post" action="/quizzes/<%=quiz.id%>?_method=PUT">
 
-      <ul>
+    <div class="box">
+        <div class="columns">
+            <div class="column">
+                <h3 class="subtitle is-4">Pregunta</h3>
+            </div>
+            <div class="column is-narrow">
+                <span class="tag is-success is-medium">Respuesta correcta: </span>
+            </div>
+            <div class="column is-narrow">
+                <div class="select">
+                    <select name="answer">
+                      <% if (quiz.answer == 1) {%>
+                        <option value="1" selected="selected">Respuesta 1</option>
+                      <%} else { %>
+                        <option value="1">Respuesta 1</option>
+                      <% } %>
+                      <% if (quiz.answer == 2) {%>
+                        <option value="2" selected="selected">Respuesta 2</option>
+                      <%} else { %>
+                        <option value="2">Respuesta 2</option>
+                      <% } %>
+                      <% if (quiz.answer == 3) {%>
+                        <option value="3" selected="selected">Respuesta 3</option>
+                      <%} else { %>
+                        <option value="3">Respuesta 3</option>
+                      <% } %>
+                      <% if (quiz.answer == 4) {%>
+                        <option value="4" selected="selected">Respuesta 4</option>
+                      <%} else { %>
+                        <option value="4">Respuesta 4</option>
+                      <% } %>
+                    </select>
+                </div>
+            </div>
+        </div>
 
-        <li>
-          <span class="tag is-dark is-medium">Pregunta:</span>
-          <input type="text" value="<%=quiz.question%>" class="input is-primary" name="question" autocomplete="off">
-        </li>
+        <textarea class="textarea is-primary" placeholder="Cuál es el mejor club de la ETSIT?" name="question" rows="3"><%=quiz.question%></textarea>
+        
+        <br><br>
 
-        <li>
-          <span class="tag is-dark is-medium">Número de respuesta correcta:</span>
-          <input type="text" value="<%=quiz.answer%>" class="input is-primary" name="answer" autocomplete="off">
-        </li>
+        <p class="subtitle is-5">Respuesta 1</p><textarea class="textarea is-primary" placeholder="El Radio obviamente" name="answer1" rows="2"><%=quiz.answer1%></textarea>
 
-        <li>
-          <h2 class="subtitle is-5">Opciones:</h2>
-        </li>
+        <br>
 
-        <li>
-          <span class="tag is-dark is-medium">Answer1:</span>
-          <input type="text" value="<%=quiz.answer1%>" class="input is-primary" name="answer1" autocomplete="off">
-        </li>
+        <p class="subtitle is-5">Respuesta 2</p><textarea class="textarea is-primary" placeholder="El CROM" name="answer2" rows="2"><%=quiz.answer2%></textarea>
 
-        <li>
-          <span class="tag is-dark is-medium">Answer2:</span>
-          <input type="text" value="<%=quiz.answer2%>" class="input is-primary" name="answer2" autocomplete="off">
-        </li>
+        <br>
 
-        <li>
-          <span class="tag is-dark is-medium">Answer3:</span>
-          <input type="text" value="<%=quiz.answer3%>" class="input is-primary" name="answer3" autocomplete="off">
-        </li>
+        <p class="subtitle is-5">Respuesta 3</p><textarea class="textarea is-primary" placeholder="EURI" name="answer3" rows="2"><%=quiz.answer3%></textarea>
 
-        <li>
-          <span class="tag is-dark is-medium">Answer4:</span>
-          <input type="text" value="<%=quiz.answer3%>" class="input is-primary" name="answer4" autocomplete="off">
-        </li>
+        <br>
 
-        <li>
-          <input type="submit" class="button is-warning" value="Edit Quiz">
-        </li>
-
-      </ul>
+        <p class="subtitle is-5">Respuesta 4</p><textarea class="textarea is-primary" placeholder="IEEE" name="answer4" rows="2"><%=quiz.answer4%></textarea>
+        
+        <br>
+      </div>
 
 
   </form>

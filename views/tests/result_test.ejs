@@ -1,18 +1,39 @@
 <div class="content">
 
-    <h2 class="subtitle is-1"><%=subject%> - <%=desc%> \(\Rightarrow \) RESULTADO</h2>
+  <div class="box">
+      <div class="columns">
+          <div class="column">
+          <p class="subtitle is-2">
+              Test Id: <%=testid%>
+          </p>
+          </div>
+          <div class="column is-narrow">
+          <a href="/tests/<%=subject%>"><%=subject%></a>
+          </div>
+      </div>
+      <div class="columns">
+          <div class="column">
+              <p class="subtitle is-4">Descripción: <%=desc%></p>
+          </div>
+          <div class="column is-narrow">
+              <span class="tag has-text-white has-background-info is-large">RESULTADO</span>
+          </div>
+      </div>
+      <br>
+      <div class="columns">
+        <div class="column has-background-success is-one-third">
+          <p class="subtitle is-4">Correctas: <b><%=correct%></b> </p>
+        </div>
+        <div class="column has-background-danger is-one-third">
+          <p class="subtitle is-4">Incorrectas: <b><%=incorrect%></b> </p>
+        </div>
+        <div class="column has-background-light is-one-third">
+          <p class="subtitle is-4">No respondidas: <b><%=nonanswered%></b> </p>
+        </div>
+      </div>
+  </div>
 
-    <div class="columns">
-      <div class="column has-background-success is-one-third">
-        <p class="subtitle is-4">Correctas: <b><%=correct%></b> </p>
-      </div>
-      <div class="column has-background-danger is-one-third">
-        <p class="subtitle is-4">Incorrectas: <b><%=incorrect%></b> </p>
-      </div>
-      <div class="column has-background-light is-one-third">
-        <p class="subtitle is-4">No respondidas: <b><%=nonanswered%></b> </p>
-      </div>
-    </div>
+    
 
     <div class="columns">
         <div class="column">
@@ -82,7 +103,7 @@
 
             <a href="/tests/<%=subject%>" class="button is-info">Volver</a>
 
-            <a href="/tests/<%=subject%>/<%=desc%>" class="button is-warning">Intentar de nuevo</a>
+            <a href="/tests/<%=subject%>/<%=testid%>" class="button is-warning">Intentar de nuevo</a>
 
         </div>
     </div>

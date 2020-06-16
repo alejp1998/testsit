@@ -1,0 +1,85 @@
+<div class="content">
+
+    <div class="box is-info">
+        <div class="columns">
+            <div class="column">
+            <p class="subtitle is-2">
+                Test Id: <%=testid%>
+            </p>
+            </div>
+            <div class="column is-narrow">
+            <a href="/tests/<%=subject%>"><%=subject%></a>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <p class="subtitle is-4">Descripción: <%=desc%></p>
+            </div>
+            <div class="column is-narrow">
+                <span class="tag has-text-white has-background-info is-large">NUEVO TEST</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="columns">
+        <div class="column">
+            <form method="post" action="/addtest/<%=subject%>">
+                <div style="display:none;">
+                    <input class="input" type="text" name="testid" value="<%=testid%>">
+                    <input class="input" type="text" name="desc" value="<%=desc%>">
+                    <input class="input" type="text" name="year" value="<%=year%>">
+                    <input class="input" type="text" name="month" value="<%=month%>">
+                </div>
+                
+
+                      <% for (var i = 0; i < npreg; i++) { %>
+                        <% var n = Number(i); %>
+
+                              <div class="box">
+                                <div class="columns">
+                                    <div class="column">
+                                        <h3 class="subtitle is-4"><span class="tag is-info is-medium"><%=n+1%></span>  Pregunta</h3>
+                                    </div>
+                                    <div class="column is-narrow">
+                                        <span class="tag is-success is-medium">Respuesta correcta: </span>
+                                    </div>
+                                    <div class="column is-narrow">
+                                        <div class="select">
+                                            <select name="answer">
+                                                <option value="1">Respuesta 1</option>
+                                                <option value="2">Respuesta 2</option>
+                                                <option value="3">Respuesta 3</option>
+                                                <option value="4">Respuesta 4</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <textarea class="textarea is-primary" placeholder="Cuál es el mejor club de la ETSIT?" value="" name="question" rows="3"></textarea>
+                                
+                                <br><br>
+
+                                <p class="subtitle is-5">Respuesta 1</p><textarea class="textarea is-primary" placeholder="El Radio obviamente" value="" name="answer1" rows="2"></textarea>
+
+                                <br>
+
+                                <p class="subtitle is-5">Respuesta 2</p><textarea class="textarea is-primary" placeholder="El CROM" value="" name="answer2" rows="2"></textarea>
+
+                                <br>
+
+                                <p class="subtitle is-5">Respuesta 3</p><textarea class="textarea is-primary" placeholder="EURI" value="" name="answer3" rows="2"></textarea>
+
+                                <br>
+
+                                <p class="subtitle is-5">Respuesta 4</p><textarea class="textarea is-primary" placeholder="IEEE" value="" name="answer4" rows="2"></textarea>
+                                
+                                <br>
+                              </div>
+
+                      <% } %>
+
+                    <input type="submit" class="button is-success is-large" value="Añadir test">
+            </form>
+        </div>
+    </div>
+</div>
