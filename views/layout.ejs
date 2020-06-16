@@ -58,7 +58,15 @@
             <a class="navbar-item" href="/tests/primero">Primero</a>
             <a class="navbar-item" href="/tests/segundo">Segundo</a>
             <a class="navbar-item" href="/tests/tercero">Tercero</a>
-            <a class="navbar-item" href="/tests/cuarto">Cuarto</a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link" href="/tests/cuarto">Cuarto</a>
+              <div class="navbar-dropdown is-boxed">
+                  <a class="navbar-item" href="/tests/sistemas">Sist. de Telecomunicación</a>
+                  <a class="navbar-item" href="/tests/electronica">Sist. Electrónicos</a>
+                  <a class="navbar-item" href="/tests/sonidoimagen">Sist. Audiovisuales</a>
+                  <a class="navbar-item" href="/tests/telematica">Sist. Telemáticos</a>
+              </div>
+            </div>
         </div>
       </div>
 
@@ -116,8 +124,8 @@
 
 <section class="hero">
     <% if (messages.info) { %>
-        <div class='hero is-info'>
-            <h3 class="subtitle">Info:</h3>
+        <div class='box has-text-white has-background-info'>
+            <p class="is-size-3">Info:</p>
             <ul>
                 <% for (var i in messages.info) { %>
                     <li> <%= messages.info[i] %> </li>
@@ -127,8 +135,8 @@
     <% } %>
 
     <% if (messages.success) { %>
-        <div class='hero is-success'>
-            <h3 class="subtitle">Tasks completed successfully:</h3>
+        <div class='box has-text-white has-background-success'>
+            <p class="is-size-3">Tasks completed successfully:</p>
             <ul>
                 <% for (var i in messages.success) { %>
                     <li> <%= messages.success[i] %> </li>
@@ -138,8 +146,8 @@
     <% } %>
 
     <% if (messages.error) { %>
-        <div class='hero is-danger'>
-            <h3 class="subtitle">Errors:</h3>
+        <div class='box has-text-white has-background-danger'>
+            <p class="is-size-3">Errors:</p>
             <ul>
                 <% for (var i in messages.error) { %>
                     <li> <%= messages.error[i] %> </li>

@@ -1,15 +1,27 @@
-<h2 class="subtitle is-4">Welcome! Create an account and start playing!</h2>
 <form method="post" action="/signup">
-   <ul>
-        <span class="tag is-dark is-medium">Username:</span>
-        <input type="text" class="input" name="username" autocomplete="off">
+    <div class="columns">
+        <div class="column">
+            <p class="title is-1">Bienvenido!</p>
+        </div>
+        <div class="column is-narrow">
+            <input type="submit" class="button is-success is-large" value="Sign Up">
+        </div>
+    </div>
 
-        <span class="tag is-dark is-medium">Password:</span>
-        <input type="password" class="input" name="password" autocomplete="off">
+    <div class="columns">
+        <div class="column">
+            <span class="tag is-dark is-medium">Usuario:</span>
+            <input type="text" class="input" name="username" autocomplete="off">
+        </div>
+        <div class="column">
+            <span class="tag is-dark is-medium">Contraseña:</span>
+            <input type="password" class="input" name="password" autocomplete="off">
+        </div>
+        <div class="column">
+            <span class="tag is-dark is-medium">Repetir Contraseña:</span>
+            <input type="password" class="input" name="password2" autocomplete="off">
+        </div>
+    </div>
 
-        <span class="tag is-dark is-medium">Repeat Password:</span>
-        <input type="password" class="input" name="password2" autocomplete="off">
-
-        <input type="submit" class="button" value="Log In">
-    </ul>
+        
 </form>
