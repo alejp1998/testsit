@@ -58,6 +58,11 @@ router.get('/tests/primero', quizController.primero);
 router.get('/tests/segundo', quizController.segundo);
 router.get('/tests/tercero', quizController.tercero);
 router.get('/tests/cuarto', quizController.cuarto);
+router.get('/tests/sistemas', quizController.sistemas);
+router.get('/tests/electronica', quizController.electronica);
+router.get('/tests/sonidoimagen', quizController.sonidoimagen);
+router.get('/tests/telematica', quizController.telematica);
+
 router.get('/tests/:subject',quizController.subjectTests);
 router.get('/newtest/:subject',quizController.addTestForm);
 router.get('/tests/:subject/:testid',quizController.playTest);

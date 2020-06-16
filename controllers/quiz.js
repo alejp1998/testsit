@@ -94,22 +94,42 @@ exports.index = (req, res, next) => {
 
 //GET /quizzes/primero
 exports.primero = (req, res, next) => {
-	res.render('tests/primero.ejs');
+	res.render('tests/cursos/primero.ejs');
 };
 
 //GET /quizzes/segundo
 exports.segundo = (req, res, next) => {
-	res.render('tests/segundo.ejs');
+	res.render('tests/cursos/segundo.ejs');
 };
 
 //GET /quizzes/tercero
 exports.tercero = (req, res, next) => {
-	res.render('tests/tercero.ejs');
+	res.render('tests/cursos/tercero.ejs');
 };
 
 //GET /quizzes/cuarto
 exports.cuarto = (req, res, next) => {
-	res.render('tests/cuarto.ejs');
+	res.render('tests/cursos/cuarto.ejs');
+};
+
+//GET /quizzes/sistemas
+exports.sistemas = (req, res, next) => {
+	res.render('tests/cursos/sistemas.ejs');
+};
+
+//GET /quizzes/electronica
+exports.electronica = (req, res, next) => {
+	res.render('tests/cursos/electronica.ejs');
+};
+
+//GET /quizzes/sonidoimagen
+exports.sonidoimagen = (req, res, next) => {
+	res.render('tests/cursos/sonidoimagen.ejs');
+};
+
+//GET /quizzes/telematica
+exports.telematica = (req, res, next) => {
+	res.render('tests/cursos/telematica.ejs');
 };
 
 //GET /tests/:subject
@@ -186,7 +206,7 @@ exports.solvedTest = (req, res, next) => {
 //Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
 exports.addTestForm = (req, res, next) => {
   const subject = req.params.subject;
-	res.render('tests/newtest1.ejs', {subject} );
+	res.render('tests/newtest.ejs', {subject} );
 };
 
 
@@ -199,7 +219,7 @@ exports.addTestQuestions = (req, res, next) => {
   const month = req.body.month;
   const desc = req.body.desc;
   const npreg = req.body.npreg;
-	res.render('tests/newtest2.ejs', {subject,testid,year,month,desc,npreg} );
+	res.render('tests/addtest.ejs', {subject,testid,year,month,desc,npreg} );
 };
 
 //POST /addtest/:subject/
