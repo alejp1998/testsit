@@ -55,6 +55,18 @@
                                         <b>D.</b>  <%=quiz.answer4%>
                                       </label></p>
                                       <% } %>
+                                      <% if(quiz.answer5){ %>
+                                      <p class="subtitle is-5"><label class="radio">
+                                        <input type="radio" name="answer<%=n%>" value="5">
+                                        <b>E.</b>  <%=quiz.answer5%>
+                                      </label></p>
+                                      <% } %>
+                                      <% if(quiz.answer6){ %>
+                                      <p class="subtitle is-5"><label class="radio">
+                                        <input type="radio" name="answer<%=n%>" value="6">
+                                        <b>F.</b>  <%=quiz.answer6%>
+                                      </label></p>
+                                      <% } %>
                                       <br>
                                       <p class="subtitle is-5"><label class="radio">
                                         <input type="radio" name="answer<%=n%>" value="0" checked>

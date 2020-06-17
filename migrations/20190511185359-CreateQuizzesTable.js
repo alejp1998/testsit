@@ -41,6 +41,8 @@ module.exports = {
           answer2: Sequelize.STRING,
           answer3: Sequelize.STRING,
           answer4: Sequelize.STRING,
+          answer5: Sequelize.STRING,
+          answer6: Sequelize.STRING,
           createdAt: {
             type: Sequelize.DATE,
             allowNull: false

@@ -95,9 +95,31 @@
                                     </li>
                                   <% } %>
                                 <% } %>
+                                <% if(quiz.answer5){ %>
+                                  <% if(Number(quiz.answer) === 5){ %>
+                                    <li>
+                                      <p class="subtitle is-4"><b>E.  <%=quiz.answer5%></b></p>
+                                    </li>
+                                  <% }else{ %>
+                                    <li>
+                                      <p class="subtitle is-5">E.  <%=quiz.answer5%></p>
+                                    </li>
+                                  <% } %>
+                                <% } %>
+                                <% if(quiz.answer6){ %>
+                                  <% if(Number(quiz.answer) === 6){ %>
+                                    <li>
+                                      <p class="subtitle is-4"><b>F.  <%=quiz.answer6%></b></p>
+                                    </li>
+                                  <% }else{ %>
+                                    <li>
+                                      <p class="subtitle is-5">F.  <%=quiz.answer6%></p>
+                                    </li>
+                                  <% } %>
+                                <% } %>
                             </ul>
                             <br><br>
-                          </div>
+                        </div>
 
             <% } %>
 

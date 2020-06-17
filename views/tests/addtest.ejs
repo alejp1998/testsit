@@ -48,8 +48,18 @@
                                             <select name="answer">
                                                 <option value="1">Respuesta 1</option>
                                                 <option value="2">Respuesta 2</option>
+                                                <% if (noptions > 2) { %> 
                                                 <option value="3">Respuesta 3</option>
+                                                <% } %> 
+                                                <% if (noptions > 3) { %> 
                                                 <option value="4">Respuesta 4</option>
+                                                <% } %> 
+                                                <% if (noptions > 4) { %> 
+                                                <option value="5">Respuesta 5</option>
+                                                <% } %> 
+                                                <% if (noptions > 5) { %> 
+                                                <option value="6">Respuesta 6</option>
+                                                <% } %>
                                             </select>
                                         </div>
                                     </div>
@@ -69,15 +79,33 @@
 
                                 <br>
 
+                                <% if (noptions > 2) { %> 
                                 <span class="tag is-dark is-medium">Respuesta 3</span>
                                 <textarea class="textarea is-primary" placeholder="EURI" name="answer3" rows="2"></textarea>
 
                                 <br>
+                                <% } %>
 
+                                <% if (noptions > 3) { %> 
                                 <span class="tag is-dark is-medium">Respuesta 4</span>
                                 <textarea class="textarea is-primary" placeholder="IEEE" name="answer4" rows="2"></textarea>
                                 
                                 <br>
+                                <% } %>
+
+                                <% if (noptions > 4) { %> 
+                                <span class="tag is-dark is-medium">Respuesta 5</span>
+                                <textarea class="textarea is-primary" placeholder="Delta" name="answer5" rows="2"></textarea>
+
+                                <br>
+                                <% } %>
+
+                                <% if (noptions > 5) { %> 
+                                <span class="tag is-dark is-medium">Respuesta 6</span>
+                                <textarea class="textarea is-primary" placeholder="Depor" name="answer6" rows="2"></textarea>
+
+                                <br>
+                                <% } %>
                             </div>
                       <% } %>
 

@@ -37,21 +37,19 @@ router.get('/users/:userId(\\d+)/quizzes', quizController.index);
 
 /* GET quizzes */
 router.get('/quizzes', quizController.index);
-router.get('/quizzes/:quizId(\\d+)/play',sessionController.loginRequired,quizController.playQuiz);
-router.get('/quizzes/:quizId(\\d+)',sessionController.loginRequired,quizController.showQuiz);
-router.get('/quizzes/:quizId(\\d+)/edit', sessionController.loginRequired, quizController.adminOrAuthorRequired,
-    quizController.editQuiz);
-router.get('/quizzes/new',sessionController.loginRequired, quizController.newQuiz);
+router.get('/quizzes/:quizId(\\d+)/play',sessionController.loginRequired, quizController.playQuiz);
+router.get('/quizzes/:quizId(\\d+)',sessionController.loginRequired, quizController.showQuiz);
+router.get('/quizzes/:quizId(\\d+)/edit', sessionController.loginRequired, sessionController.adminRequired, quizController.editQuiz);
+router.get('/quizzes/new',sessionController.loginRequired, sessionController.adminRequired, quizController.newQuiz);
 /*PUT quizzes*/
-router.put('/quizzes/:quizId(\\d+)',sessionController.loginRequired, quizController.adminOrAuthorRequired,
-    quizController.updateQuiz);
-router.put('/quizzes/randomplay',quizController.randomPlay);
-router.put('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomCheck);
-router.put('/quizzes/:quizId(\\d+)/check',sessionController.loginRequired,quizController.checkQuiz);
+router.put('/quizzes/:quizId(\\d+)',sessionController.loginRequired, sessionController.adminRequired, quizController.updateQuiz);
+router.put('/quizzes/randomplay',sessionController.loginRequired, quizController.randomPlay);
+router.put('/quizzes/randomcheck/:quizId(\\d+)',sessionController.loginRequired, quizController.randomCheck);
+router.put('/quizzes/:quizId(\\d+)/check',sessionController.loginRequired, quizController.checkQuiz);
 /*POST quizzes*/
 router.post('/quizzes',sessionController.adminRequired, quizController.addQuiz);
 /*DELETE quizzes*/
-router.delete('/quizzes/:quizId(\\d+)', quizController.adminOrAuthorRequired, quizController.deleteQuiz);
+router.delete('/quizzes/:quizId(\\d+)', sessionController.adminRequired, quizController.deleteQuiz);
 
 /* GET tests */
 router.get('/tests/primero', quizController.primero);
@@ -63,22 +61,23 @@ router.get('/tests/electronica', quizController.electronica);
 router.get('/tests/sonidoimagen', quizController.sonidoimagen);
 router.get('/tests/telematica', quizController.telematica);
 
-router.get('/tests/:subject',quizController.subjectTests);
+router.get('/tests/:subject', quizController.subjectTests);
+
 router.get('/newtest/:subject',sessionController.adminRequired,quizController.addTestForm);
 router.get('/edittest/:subject/:testid',sessionController.adminRequired,quizController.editTestForm);
-router.get('/tests/:subject/:testid',quizController.playTest);
-router.get('/tests/:subject/:testid/solved',quizController.solvedTest);
+router.get('/tests/:subject/:testid',sessionController.loginRequired, quizController.playTest);
+router.get('/tests/:subject/:testid/solved',sessionController.loginRequired, quizController.solvedTest);
 
 /*PUT tests*/
-router.put('/tests/:subject/:desc',quizController.checkTest);
+router.put('/tests/:subject/:desc',sessionController.loginRequired, quizController.checkTest);
 
 /*POST tests*/
 router.post('/addtest/:subject',sessionController.adminRequired, quizController.addTest);
 router.post('/newtest/:subject',sessionController.adminRequired, quizController.addTestQuestions);
-router.post('/edittest/:subject/:testid',sessionController.adminRequired,quizController.editTest);
+router.post('/edittest/:subject/:testid',sessionController.adminRequired, quizController.editTest);
 
 /*DELETE tests*/
-router.delete('/tests/:subject/:testid',sessionController.adminRequired,quizController.deleteTest);
+router.delete('/tests/:subject/:testid',sessionController.adminRequired, quizController.deleteTest);
 
 
 /*------- USERS ROUTES --------*/
@@ -94,16 +93,13 @@ router.get('/users', userController.index);
 router.get('/check', userController.logIn);
 router.get('/logout', userController.logOut);
 router.get('/users/:userId(\\d+)',sessionController.loginRequired, userController.show);
-router.get('/users/:userId(\\d+)/edit', sessionController.loginRequired, sessionController.adminOrMyselfRequired,
-    userController.edit);
+router.get('/users/:userId(\\d+)/edit', sessionController.loginRequired, sessionController.adminOrMyselfRequired, userController.edit);
 /* POST Users */
 router.post('/signup', userController.newUser);
 /* PUT USERS */
-router.put('/users/:userId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired,
-    userController.update);
+router.put('/users/:userId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, userController.update);
 /* DELETE USERS */
-router.delete('/users/:userId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired,
-    userController.destroy);
+router.delete('/users/:userId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, userController.destroy);
 
 /*------- STATS ROUTES --------*/
 

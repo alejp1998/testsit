@@ -10,7 +10,7 @@ exports.load = (req, res, next, quizId) => {
 
     const options = {
         include: [
-            {model: models.user, as: 'author'}
+            {model: models.User, as: 'author'}
         ]
     };
 
@@ -69,26 +69,26 @@ exports.index = (req, res, next) => {
 	}
 
 	//Si no hemos buscado nada, muestra todos los quizzes
-    models.quiz.count(countOptions)
-    .then(count => {
-    	//Pagination
-		const page_items = 5;
-		//The page shown is in the query
-		const pageno = Number(req.query.pageno) || 1;
-		//Create String with HTML to render pagination buttons
-		res.locals.paginate_control = paginate(count, page_items, pageno, req.url);
+  models.quiz.count(countOptions)
+  .then(count => {
+    //Pagination
+  const page_items = 5;
+  //The page shown is in the query
+  const pageno = Number(req.query.pageno) || 1;
+  //Create String with HTML to render pagination buttons
+  res.locals.paginate_control = paginate(count, page_items, pageno, req.url);
 
-		const findOptions = {
-			...countOptions,
-			offset: page_items*(pageno-1),
-			limit: page_items
-		};
+  const findOptions = {
+    ...countOptions,
+    offset: page_items*(pageno-1),
+    limit: page_items
+  };
 
-		return models.quiz.findAll(findOptions);
-    }).then(quizzes => {
-    	res.render('quizzes/index.ejs',{quizzes,search,title});
+  return models.quiz.findAll(findOptions);
+  }).then(quizzes => {
+    res.render('quizzes/index.ejs',{quizzes,search,title});
 	})
-    .catch(error => next(error));
+  .catch(error => next(error));
 };
 
 
@@ -189,12 +189,14 @@ exports.solvedTest = (req, res, next) => {
   models.quiz.findAll({
     where: {subject: subject,
             testid: testid}
-  }).then(questions => {
+  })
+  .then(questions => {
     test = questions;
     desc = test[0].desc;
     req.session.test = test;
     res.render('tests/solved_test.ejs', {subject,testid,desc,test} );
-  }).catch(error => {
+  })
+  .catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);
     next(error);
   });
@@ -217,7 +219,8 @@ exports.editTestForm = (req, res, next) => {
   models.quiz.findAll({
     where: {subject: subject,
             testid: testid}
-  }).then(questions => {
+  })
+  .then(questions => {
     test = questions;
     desc = test[0].desc;
     year = test[0].year;
@@ -226,7 +229,8 @@ exports.editTestForm = (req, res, next) => {
     
     req.session.test = test;
     res.render('tests/edittest.ejs', {subject,testid,desc,year,month,test,npreg} );
-  }).catch(error => {
+  })
+  .catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);
     next(error);
   });
@@ -242,7 +246,8 @@ exports.addTestQuestions = (req, res, next) => {
   const month = req.body.month;
   const desc = req.body.desc;
   const npreg = req.body.npreg;
-	res.render('tests/addtest.ejs', {subject,testid,year,month,desc,npreg} );
+  const noptions = req.body.noptions;
+	res.render('tests/addtest.ejs', {subject,testid,year,month,desc,npreg,noptions} );
 };
 
 //POST /edittest/:subject/:testid
@@ -263,6 +268,8 @@ exports.editTest = (req, res, next) => {
   const answers2 = req.body.answer2;
   const answers3 = req.body.answer3;
   const answers4 = req.body.answer4;
+  const answers5 = req.body.answer5;
+  const answers6 = req.body.answer6;
 
   //Create test
   for (var i in questions){
@@ -277,7 +284,9 @@ exports.editTest = (req, res, next) => {
       answer1: answers1[i],
       answer2: answers2[i],
       answer3: answers3[i],
-      answer4: answers4[i]
+      answer4: answers4[i],
+      answer5: answers5[i],
+      answer6: answers6[i]
     }
     test.push(test_question);
   }
@@ -289,7 +298,7 @@ exports.editTest = (req, res, next) => {
   })
   .then( () => {
     models.quiz.bulkCreate(test)
-		.then(() => {
+		.then( () => {
 			req.flash('success', 'Test updated succesfully');
 			res.redirect('/tests/' + subject + '/' + new_testid + '/solved');
 		})
@@ -302,7 +311,8 @@ exports.editTest = (req, res, next) => {
 			req.flash('error', 'Error updating the Quiz: ' + error.message);
 			next(error);
 		});
-	}).catch(error => {
+  })
+  .catch(error => {
 		req.flash('error', 'Error updating the Test: ' + error.message);
 		next(error);
 	});
@@ -324,13 +334,15 @@ exports.addTest = (req, res, next) => {
   const answers2 = req.body.answer2;
   const answers3 = req.body.answer3;
   const answers4 = req.body.answer4;
+  const answers5 = req.body.answer5;
+  const answers6 = req.body.answer6;
 
   //Create test
   for (var i in questions){
     test_question = {
       subject: subject,
       desc: desc,
-      testid: testid,
+      testid: new_testid,
       year: year,
       month: month,
       question: questions[i],
@@ -338,25 +350,27 @@ exports.addTest = (req, res, next) => {
       answer1: answers1[i],
       answer2: answers2[i],
       answer3: answers3[i],
-      answer4: answers4[i]
+      answer4: answers4[i],
+      answer5: answers5[i],
+      answer6: answers6[i]
     }
     test.push(test_question);
   }
 
   models.quiz.bulkCreate(test)
-		.then(() => {
-			req.flash('success', 'Test added succesfully');
-			res.redirect('/tests/' + subject);
-		})
-		.catch(Sequelize.ValidationError, error => {
-			req.flash('error', 'There are errors in the form:');
-			error.errors.forEach(({message}) => req.flash('error', message));
-			res.render('quizzes/new', {test});
-		})
-		.catch(error => {
-			req.flash('error', 'Error adding the Quiz: ' + error.message);
-			next(error);
-		});
+  .then( () => {
+    req.flash('success', 'Test added succesfully');
+    res.redirect('/tests/' + subject);
+  })
+  .catch(Sequelize.ValidationError, error => {
+    req.flash('error', 'There are errors in the form:');
+    error.errors.forEach(({message}) => req.flash('error', message));
+    res.render('quizzes/new', {test});
+  })
+  .catch(error => {
+    req.flash('error', 'Error adding the Quiz: ' + error.message);
+    next(error);
+  });
 };
 
 //PUT /tests/:subject/:testid
@@ -544,20 +558,6 @@ exports.checkTest = (req, res, next) => {
   res.render('tests/result_test.ejs', {test,answers,subject,testid,desc,correct,incorrect,nonanswered} );
 };
 
-//GET /quizzes/:quizId/play
-exports.playQuiz = (req, res, next) => {
-  const quiz = req.quiz;
-  const testid = quiz.testid
-  const subject = quiz.subject;
-  const desc = quiz.desc;
-
-	if(!quiz){
-		res.render(`El quiz ${req.params.quizId} no existe.`);
-	}else{
-		res.render('quizzes/play.ejs', {quiz,subject,testid,desc} );
-	}
-};
-
 //DEL /tests/:subject/:testid
 exports.deleteTest = (req, res, next) => {
   const subject = req.params.subject;
@@ -577,6 +577,20 @@ exports.deleteTest = (req, res, next) => {
 	});
 };
 
+//GET /quizzes/:quizId/play
+exports.playQuiz = (req, res, next) => {
+  const quiz = req.quiz;
+  const testid = quiz.testid
+  const subject = quiz.subject;
+  const desc = quiz.desc;
+
+	if(!quiz){
+		res.render(`El quiz ${req.params.quizId} no existe.`);
+	}else{
+		res.render('quizzes/play.ejs', {quiz,subject,testid,desc} );
+	}
+};
+
 //PUT /quizzes/:quizId/check
 exports.checkQuiz = (req, res, next) => {
 	let result;
@@ -584,7 +598,8 @@ exports.checkQuiz = (req, res, next) => {
 	const answer = req.body.answer;
 	if(!quiz){
 		return res.render(`El quiz ${req.params.quizId} no existe.`);
-	}
+  }
+  
 	if(Number(quiz.answer) === Number(answer)){
 		result = "Correct";
 	}else{
@@ -593,16 +608,19 @@ exports.checkQuiz = (req, res, next) => {
 
 	if(req.session.user){
 		const userId = req.session.user.id;
-		models.user.findByPk(userId)
+		models.User.findByPk(userId)
 		.then(user => {
 			if(result === "Correct"){
 				user.points++;
 			}else{
 				user.fails++;
-			}
+      }
+      
 			req.session.user = user;
 			user.save({fields: ["points","fails"]})
-			.then( () => res.render('quizzes/check.ejs', {quiz,result} ));
+      .then( () => 
+        res.render('quizzes/check.ejs', {quiz,result} 
+      ));
 		});
 	}else{
 		return res.render('quizzes/check.ejs', {quiz,result} );
@@ -612,7 +630,7 @@ exports.checkQuiz = (req, res, next) => {
 //GET /quizzes/:quizId/edit
 exports.editQuiz = (req, res, next) => {
   const quiz = req.quiz;
-  const testid = quiz.testid
+  const testid = quiz.testid;
   const subject = quiz.subject;
   const desc = quiz.desc;
   
@@ -628,9 +646,9 @@ exports.updateQuiz = (req, res, next) => {
 	const id = req.quiz.id;
 	var quiz = req.body;
 	quiz.id = id;
-	const {course,subject,desc,answer,answer1,answer2,answer3,answer4} = quiz;
+	const {course,subject,desc,answer,answer1,answer2,answer3,answer4,answer5,answer6} = quiz;
 
-	if(Number(answer)<=4 && Number(answer)>=1){
+	if(Number(answer)<=6 && Number(answer)>=1){
 		models.quiz.update( quiz, { where: {id} } )
 		.then(() => {
 			req.flash('success','Quiz updated succesfully');
@@ -652,39 +670,37 @@ exports.updateQuiz = (req, res, next) => {
 //GET /quizzes/:quizId
 exports.showQuiz = (req, res, next) => {
 	const {quiz} = req;
-  const answers = [quiz.answer1,quiz.answer2,quiz.answer3,quiz.answer4];
-  const answer = answers[quiz.answer-1]
-	res.render('quizzes/show.ejs', {quiz,answer} );
+	res.render('quizzes/show.ejs', {quiz} );
 };
 
 //GET /quizzes/new
 exports.newQuiz = (req, res, next) => {
-	const quiz = {question: '', answer: '', answer1: '', answer2: '', answer3: '', answer4: ''};
+	const quiz = {question: '', answer: '', answer1: '', answer2: '', answer3: '', answer4: '', answer5: '', answer6: ''};
 	res.render('quizzes/new.ejs',{quiz});
 };
 
 //POST /quizzes/
 exports.addQuiz = (req, res, next) => {
-	const {course,subject,desc,question,answer,answer1,answer2,answer3,answer4} = req.body;
+	const {course,testid,subject,desc,question,answer,answer1,answer2,answer3,answer4,answer5,answer6} = req.body;
 
 	const authorId = req.session.user && req.session.user.id || 0;
 
-	const quiz = {course,subject,desc,question,answer,answer1,answer2,answer3,authorId};
+	const quiz = {course,testid,subject,desc,question,answer,answer1,answer2,answer3,answer4,answer5,answer6,authorId};
 
 	models.quiz.create(quiz)
-		.then(() => {
-			req.flash('success', 'Quiz added succesfully');
-			res.redirect('/quizzes');
-		})
-		.catch(Sequelize.ValidationError, error => {
-			req.flash('error', 'There are errors in the form:');
-			error.errors.forEach(({message}) => req.flash('error', message));
-			res.render('quizzes/new', {quiz});
-		})
-		.catch(error => {
-			req.flash('error', 'Error adding the Quiz: ' + error.message);
-			next(error);
-		});
+  .then(() => {
+    req.flash('success', 'Quiz added succesfully');
+    res.redirect('/quizzes');
+  })
+  .catch(Sequelize.ValidationError, error => {
+    req.flash('error', 'There are errors in the form:');
+    error.errors.forEach(({message}) => req.flash('error', message));
+    res.render('quizzes/new', {quiz});
+  })
+  .catch(error => {
+    req.flash('error', 'Error adding the Quiz: ' + error.message);
+    next(error);
+  });
 };
 
 
@@ -756,7 +772,7 @@ exports.randomCheck = (req, res, next) => {
 		if(!result){
 			ssn.score = 0;
 			const userId = req.session.user.id;
-			models.user.findByPk(userId)
+			models.User.findByPk(userId)
 			.then(user => {
 				user.fails++;
 				req.session.user = user;
@@ -765,7 +781,7 @@ exports.randomCheck = (req, res, next) => {
 			});
 		}else{
 			const userId = req.session.user.id;
-			models.user.findByPk(userId)
+			models.User.findByPk(userId)
 			.then(user => {
 				user.points++;
 				req.session.user = user;

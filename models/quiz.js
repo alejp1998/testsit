@@ -41,6 +41,8 @@ module.exports = function (sequelize, DataTypes) {
             answer1: DataTypes.STRING,
             answer2: DataTypes.STRING,
             answer3: DataTypes.STRING,
-            answer4: DataTypes.STRING
+            answer4: DataTypes.STRING,
+            answer5: DataTypes.STRING,
+            answer6: DataTypes.STRING
         });
 };

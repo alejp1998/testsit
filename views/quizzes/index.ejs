@@ -26,6 +26,9 @@
                 <a href="/quizzes/<%=quiz.id%>/play" class="subtitle is-4"><%=quiz.question%></a>
               </div>
 
+              <div class="column is-narrow">
+                <a href="/quizzes/<%=quiz.id%>" class="button is-primary">Solución</a>
+              </div>
               <% if(isAdmin){%>
               <div class="column is-narrow">
                 <a href="/quizzes/<%=quiz.id%>/edit" class="button is-warning">Editar</a>

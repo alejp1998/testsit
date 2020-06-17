@@ -1,36 +1,96 @@
 <div class="content">
-	<div class="columns">
-		<div class="column is-two-thirds">
-			<h2 class="subtitle is-4">Pregunta de <%= quiz.subject %>: <%= quiz.desc %></h2>
-		</div>
-	</div>
-
-    <div class="columns">
-
-        <div class="column">
-            <span class="tag is-dark is-medium">Pregunta:</span>
-            <p class="subtitle is-4"><%= quiz.question %></p>
-
-            <span class="tag is-success is-medium">Respuesta:  </span>
-            <p class="subtitle is-4"><%=answer%></p>
-
-            <span class="tag is-info is-medium">Posibles respuestas:</span>
-            <ul>
-                <li>
-                    <p class="subtitle is-4"><%= quiz.answer1 %></p>
-                </li>
-                <li>
-                    <p class="subtitle is-4"><%= quiz.answer2 %></p>
-                </li>
-                <li>
-                    <p class="subtitle is-4"><%= quiz.answer3 %></p>
-                </li>
-                <li>
-                    <p class="subtitle is-4"><%= quiz.answer4 %></p>
-                </li>
-            </ul>
-            <a href="/goback" class="button is-info">Volver</a>
+    <div class="box is-info">
+        <div class="columns">
+            <div class="column">
+            <p class="subtitle is-2">
+                Test Id: <%=quiz.testid%>
+            </p>
+            </div>
+            <div class="column is-narrow">
+            <a href="/tests/<%=quiz.subject%>"><%=quiz.subject%></a>
+            </div>
         </div>
-
+        <div class="columns">
+            <div class="column">
+                <p class="subtitle is-4">Descripción: <%=quiz.desc%></p>
+            </div>
+            <div class="column is-narrow">
+                <span class="tag has-text-white has-background-primary is-large">SOLUCIÓN PREGUNTA</span>
+            </div>
+        </div>
     </div>
+
+    <div class="box">
+        <h3 class="subtitle is-4"><%=quiz.question%></h3>
+
+        <ul>
+        <% if(quiz.answer1){ %>
+        <% if(Number(quiz.answer) === 1){ %>
+            <li>
+            <p class="subtitle is-4"><b>A.  <%=quiz.answer1%></b></p>
+            </li>
+        <% }else{ %>
+            <li>
+            <p class="subtitle is-5">A.  <%=quiz.answer1%></p>
+            </li>
+        <% } %>
+        <% } %>
+        <% if(quiz.answer2){ %>
+        <% if(Number(quiz.answer) === 2){ %>
+            <li>
+            <p class="subtitle is-4"><b>B.  <%=quiz.answer2%></b></p>
+            </li>
+        <% }else{ %>
+            <li>
+            <p class="subtitle is-5">B.  <%=quiz.answer2%></p>
+            </li>
+        <% } %>
+        <% } %>
+        <% if(quiz.answer3){ %>
+        <% if(Number(quiz.answer) === 3){ %>
+            <li>
+            <p class="subtitle is-4"><b>C.  <%=quiz.answer3%></b></p>
+            </li>
+        <% }else{ %>
+            <li>
+            <p class="subtitle is-5">C.  <%=quiz.answer3%></p>
+            </li>
+        <% } %>
+        <% } %>
+        <% if(quiz.answer4){ %>
+        <% if(Number(quiz.answer) === 4){ %>
+            <li>
+            <p class="subtitle is-4"><b>D.  <%=quiz.answer4%></b></p>
+            </li>
+        <% }else{ %>
+            <li>
+            <p class="subtitle is-5">D.  <%=quiz.answer4%></p>
+            </li>
+        <% } %>
+        <% } %>
+        <% if(quiz.answer5){ %>
+        <% if(Number(quiz.answer) === 5){ %>
+            <li>
+            <p class="subtitle is-4"><b>E.  <%=quiz.answer5%></b></p>
+            </li>
+        <% }else{ %>
+            <li>
+            <p class="subtitle is-5">E.  <%=quiz.answer5%></p>
+            </li>
+        <% } %>
+        <% } %>
+        <% if(quiz.answer6){ %>
+        <% if(Number(quiz.answer) === 6){ %>
+            <li>
+            <p class="subtitle is-4"><b>F.  <%=quiz.answer6%></b></p>
+            </li>
+        <% }else{ %>
+            <li>
+            <p class="subtitle is-5">F.  <%=quiz.answer6%></p>
+            </li>
+        <% } %>
+        <% } %>
+        </ul>
+
+      </div>
 </div>
