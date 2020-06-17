@@ -322,27 +322,45 @@ exports.editTest = (req, res, next) => {
 exports.addTest = (req, res, next) => {
   let test = [];
 
+  N = 30;
+  let empty_answers = new Array(N); 
+  for (var i = 0; i < N; i++) empty_answers[i] = ''; 
+
   const subject = req.params.subject;
   const desc = req.body.desc;
   const testid = req.body.testid;
   const year = req.body.year;
   const month = req.body.month;
+  const noptions = Number(req.body.noptions);
 
   const questions = req.body.question;
   const answers = req.body.answer;
-  const answers1 = req.body.answer1; 
-  const answers2 = req.body.answer2;
-  const answers3 = req.body.answer3;
-  const answers4 = req.body.answer4;
-  const answers5 = req.body.answer5;
-  const answers6 = req.body.answer6;
+  let answers1 = req.body.answer1; 
+  let answers2 = req.body.answer2;
+  let answers3 = req.body.answer3;
+  let answers4 = req.body.answer4;
+  let answers5 = req.body.answer5;
+  let answers6 = req.body.answer6;
+
+  if(noptions < 3){
+    answers3 = empty_answers;
+  }
+  if(noptions < 4){
+    answers4 = empty_answers;
+  }
+  if(noptions < 5){
+    answers5 = empty_answers;
+  }
+  if(noptions < 6){
+    answers6 = empty_answers;
+  }
 
   //Create test
   for (var i in questions){
     test_question = {
       subject: subject,
       desc: desc,
-      testid: new_testid,
+      testid: testid,
       year: year,
       month: month,
       question: questions[i],
