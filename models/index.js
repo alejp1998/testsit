@@ -16,10 +16,10 @@ sequelize.import(path.join(__dirname,'user'));
 sequelize.import(path.join(__dirname,'session'));
 
 //Charge models
-const {quiz,tip,user} = sequelize.models;
+const {quiz,tip,User} = sequelize.models;
 
 // Relation 1-to-N between User and Quiz:
-user.hasMany(quiz, {foreignKey: 'authorId'});
-quiz.belongsTo(user, {as: 'author', foreignKey: 'authorId'});
+User.hasMany(quiz, {foreignKey: 'authorId'});
+quiz.belongsTo(User, {as: 'author', foreignKey: 'authorId'});
 
 module.exports = sequelize;

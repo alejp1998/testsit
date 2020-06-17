@@ -1,16 +1,25 @@
-<h2 class="subtitle is-4">Edit User:</h2>
-
 <form method="post" action="/users/<%= user.id %>?_method=PUT">
-    <ul>
-        <span class="tag is-dark is-medium">Username:</span>
-        <input type="text" class="input" name="username" autocomplete="off">
+    <div class="columns">
+        <div class="column">
+            <p class="title is-1">Editar usuario</p>
+        </div>
+        <div class="column is-narrow">
+            <input type="submit" class="button is-warning is-large" value="Editar usuario">
+        </div>
+    </div>
 
-        <span class="tag is-dark is-medium">Password:</span>
-        <input type="password" class="input" name="password" autocomplete="off">
-
-        <span class="tag is-dark is-medium">Repeat Password:</span>
-        <input type="password" class="input" name="password2" autocomplete="off">
-
-        <input type="submit" class="button" value="Edit User">
-    </ul>
+    <div class="columns">
+        <div class="column">
+            <span class="tag is-dark is-medium">Usuario:</span>
+            <input type="text" class="input" name="username" autocomplete="off">
+        </div>
+        <div class="column">
+            <span class="tag is-dark is-medium">Contraseña:</span>
+            <input type="password" class="input" name="password" autocomplete="off">
+        </div>
+        <div class="column">
+            <span class="tag is-dark is-medium">Repetir Contraseña:</span>
+            <input type="password" class="input" name="password2" autocomplete="off">
+        </div>
+    </div>
 </form>

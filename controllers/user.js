@@ -1,12 +1,12 @@
 "use strict";
-const bCrypt = require('bcrypt');
 const Sequelize = require("sequelize");
 const {models} = require("../models");
+const { encryptPassword } = require("../helpers/crypt");
 const paginate = require('../helpers/paginate').paginate;
 
 // Autoload the user with id equals to :userId
 exports.load = (req, res, next, userId) => {
-    models.user.findByPk(userId)
+    models.User.findByPk(userId)
         .then(user => {
             if (user) {
                 req.user = user;
@@ -26,7 +26,7 @@ exports.index = (req, res, next) => {
         include: []
     };
 
-    models.user.count()
+    models.User.count()
     .then(count => {
         //Pagination
         const page_items = 5;
@@ -42,7 +42,7 @@ exports.index = (req, res, next) => {
             limit: page_items
         };
 
-        return models.user.findAll(findOptions);
+        return models.User.findAll(findOptions);
     })
     .then(users => {
         res.render('users/index', {users});
@@ -63,24 +63,27 @@ exports.newUser = (req,res,next) => {
     const username = req.body.username;
     const password = req.body.password;
     const password2 = req.body.password2;
-    models.user.findOne({where: {username: username}})
+    models.User.findOne({where: {username: username}})
     .then(user => {
         if(user){
             req.flash('error','User already exists');
             res.redirect('/signup');
         }else{
             if(password===password2){
-                bCrypt.hash(password, 10, (err, hash) => {
-                    models.user.create({username: username,password: hash})
-                        .then(() => {
-                            req.flash('success','User created succesfully');
-                            res.redirect('/login');
-                        })
-                        .catch(Sequelize.ValidationError, error => {
-                            req.flash('error', 'There are errors in the form:');
-                            error.errors.forEach(({message}) => req.flash('error', message));
-                            res.redirect('/signup');
-                        });
+                let user = models.User.build({
+                    username,
+                    password
+                });
+
+                user.save({fields: ["username", "password", "salt"]})
+                .then(() => {
+                    req.flash('success','User created succesfully');
+                    res.redirect('/login');
+                })
+                .catch(Sequelize.ValidationError, error => {
+                    req.flash('error', 'There are errors in the form:');
+                    error.errors.forEach(({message}) => req.flash('error', message));
+                    res.redirect('/signup');
                 });
             }else{
                 req.flash('error','Passwords do not match');
@@ -102,22 +105,21 @@ exports.logIn = (req,res,next) => {
     }
     const username = req.query.username;
     const password = req.query.password;
-    models.user.findOne({where: {username: username}})
+    models.User.findOne({where: {username: username}})
     .then(user => {
         if(!user){
             req.flash('error','Nombre de usuario incorrecto');
             res.redirect('/login');
         }else{
-            bCrypt.compare(password, user.password, (err, result) => {
-                if(result){
-                    req.session.user = user;
-                    req.flash('success','User logged in succesfully');
-                    res.redirect('/goback');
-                }else{
-                    req.flash('error','Incorrect password');
-                    res.redirect('/login');
-                }
-            });
+            let crypto_pass = encryptPassword(password,user.salt);
+            if (crypto_pass === user.password){
+                req.session.user = user;
+                req.flash('success','User logged in succesfully');
+                res.redirect('/goback');
+            }else{
+                req.flash('error','Incorrect password');
+                res.redirect('/login');
+            }
         }
     }).catch( error => {
         req.flash('error','Error logging in: ' + error.message);
@@ -145,15 +147,15 @@ exports.update = (req, res, next) => {
 
 
     if(username){
-        user.username  = username; // edition not allowed
+        user.username  = username;
         fields_to_update.push('username');
     }
 
-    // ¿Cambio el password?
     if (password) {
         if(password===password2){
             console.log('Updating password');
-            user.password = bCrypt.hashSync(password,10);
+            user.password = password;
+            fields_to_update.push('salt');
             fields_to_update.push('password');
         }else{
             req.flash('error','Passwords do not match');

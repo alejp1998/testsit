@@ -22,6 +22,9 @@ module.exports = {
             type: Sequelize.STRING,
             validate: {notEmpty: {msg: "Password must not be empty."}}
           },
+          salt: {
+            type: Sequelize.STRING
+          },
           points: {
             type: Sequelize.INTEGER,
             allowNull: false,
