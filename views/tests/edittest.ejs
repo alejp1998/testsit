@@ -1,0 +1,114 @@
+<div class="content">
+
+    <div class="box is-info">
+        <div class="columns">
+            <div class="column">
+            <p class="subtitle is-2">
+                Test Id: <%=testid%>
+            </p>
+            </div>
+            <div class="column is-narrow">
+            <a href="/tests/<%=subject%>"><%=subject%></a>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <p class="subtitle is-4">Descripción: <%=desc%></p>
+            </div>
+            <div class="column is-narrow">
+                <span class="tag has-text-black has-background-warning is-large">EDITAR TEST</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="columns">
+        <div class="column">
+            <form method="post" action="/edittest/<%=subject%>/<%=testid%>">
+                <div class="box">
+                    <span class="tag is-dark is-medium">Test Id (asignatura-mes-año-número)</span>
+                    <input type="text" value="<%=testid%>" class="input is-primary" name="testid" autocomplete="off">
+                    <br>
+                    <span class="tag is-dark is-medium">Año</span>
+                    <input type="text" value="<%=year%>" class="input is-primary" name="year" autocomplete="off">
+                    <br>
+                    <span class="tag is-dark is-medium">Mes</span>
+                    <input type="text" value="<%=month%>" class="input is-primary" name="month" autocomplete="off">
+                    <br>
+                    <span class="tag is-dark is-medium">Descripción</span>
+                    <input type="text" value="<%=desc%>" placeholder="Primer Parcial o algo por el estilo" class="input is-primary" name="desc" autocomplete="off">
+                    <br>
+                </div>
+                
+                <br>
+
+                <% for (var i = 0; i < npreg; i++) { %>
+                <% var n = Number(i); %>
+                <% var quiz = test[n]; %>
+                        <div class="box">
+                            <div class="columns">
+                                <div class="column">
+                                    <h3 class="subtitle is-4"><span class="tag is-info is-medium"><%=n+1%></span>  Pregunta</h3>
+                                </div>
+                                <div class="column is-narrow">
+                                    <span class="tag is-success is-medium">Respuesta correcta: </span>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div class="select">
+                                        <select name="answer">
+                                            <% if (quiz.answer == 1) {%>
+                                                <option value="1" selected="selected">Respuesta 1</option>
+                                              <%} else { %>
+                                                <option value="1">Respuesta 1</option>
+                                              <% } %>
+                                              <% if (quiz.answer == 2) {%>
+                                                <option value="2" selected="selected">Respuesta 2</option>
+                                              <%} else { %>
+                                                <option value="2">Respuesta 2</option>
+                                              <% } %>
+                                              <% if (quiz.answer == 3) {%>
+                                                <option value="3" selected="selected">Respuesta 3</option>
+                                              <%} else { %>
+                                                <option value="3">Respuesta 3</option>
+                                              <% } %>
+                                              <% if (quiz.answer == 4) {%>
+                                                <option value="4" selected="selected">Respuesta 4</option>
+                                              <%} else { %>
+                                                <option value="4">Respuesta 4</option>
+                                              <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <textarea class="textarea is-primary" placeholder="Cuál es el mejor club de la ETSIT?" name="question" rows="3"><%=quiz.question%></textarea>
+                            
+                            <br><br>
+
+                            <span class="tag is-dark is-medium">Respuesta 1</span>
+                            <textarea class="textarea is-primary" placeholder="El Radio obviamente" name="answer1" rows="2"><%=quiz.answer1%></textarea>
+
+                            <br>
+
+                            <span class="tag is-dark is-medium">Respuesta 2</span>
+                            <textarea class="textarea is-primary" placeholder="El CROM" name="answer2" rows="2"><%=quiz.answer2%></textarea>
+
+                            <br>
+
+                            <span class="tag is-dark is-medium">Respuesta 3</span>
+                            <textarea class="textarea is-primary" placeholder="EURI" name="answer3" rows="2"><%=quiz.answer3%></textarea>
+
+                            <br>
+
+                            <span class="tag is-dark is-medium">Respuesta 4</span>
+                            <textarea class="textarea is-primary" placeholder="IEEE" name="answer4" rows="2"><%=quiz.answer4%></textarea>
+                            
+                            <br>
+                        </div>
+
+                <% } %>
+
+                <input type="submit" class="button is-warning has-text-black is-large" value="Actualizar test">
+            </form>
+        </div>
+    </div>
+</div>

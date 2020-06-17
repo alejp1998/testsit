@@ -154,9 +154,7 @@ exports.subjectTests = (req, res, next) => {
   });
 };
 
-
-
-//GET /tests/:subject/:desc
+//GET /tests/:subject/:testid
 //Se deben precargar todas las preguntas que pertenezcan a un testid y
 //asignatura en una lista, que se deberá mostrar posteriormente como si de un
 //test de moodle se tratase, para finalmente ser corregidas
@@ -179,7 +177,6 @@ exports.playTest = (req, res, next) => {
   });
 };
 
-
 //GET /tests/:subject/:desc/solved
 //Carga el test con sus respuestas correctas
 exports.solvedTest = (req, res, next) => {
@@ -201,12 +198,36 @@ exports.solvedTest = (req, res, next) => {
   });
 };
 
-
 //GET /newtest/:subject/
 //Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
 exports.addTestForm = (req, res, next) => {
   const subject = req.params.subject;
 	res.render('tests/newtest.ejs', {subject} );
+};
+
+//GET /edittest/:subject/:testid
+//Devuelve el form para editar el test
+exports.editTestForm = (req, res, next) => {
+  const subject = req.params.subject;
+  const testid = req.params.testid;
+  let test = [];
+  let desc,year,month;
+  models.quiz.findAll({
+    where: {subject: subject,
+            testid: testid}
+  }).then(questions => {
+    test = questions;
+    desc = test[0].desc;
+    year = test[0].year;
+    month = test[0].month;
+    npreg = test.length;
+    
+    req.session.test = test;
+    res.render('tests/edittest.ejs', {subject,testid,desc,year,month,test,npreg} );
+  }).catch(error => {
+    req.flash('error', 'Error showing subject tests: ' + error.message);
+    next(error);
+  });
 };
 
 
@@ -222,6 +243,70 @@ exports.addTestQuestions = (req, res, next) => {
 	res.render('tests/addtest.ejs', {subject,testid,year,month,desc,npreg} );
 };
 
+//POST /edittest/:subject/:testid
+exports.editTest = (req, res, next) => {
+  let test = [];
+
+  const subject = req.params.subject;
+  const testid = req.params.testid;
+
+  const new_testid = req.body.testid;
+  const desc = req.body.desc;
+  const year = req.body.year;
+  const month = req.body.month;
+
+  const questions = req.body.question;
+  const answers = req.body.answer;
+  const answers1 = req.body.answer1;
+  const answers2 = req.body.answer2;
+  const answers3 = req.body.answer3;
+  const answers4 = req.body.answer4;
+
+  //Create test
+  for (var i in questions){
+    test_question = {
+      subject: subject,
+      desc: desc,
+      testid: new_testid,
+      year: year,
+      month: month,
+      question: questions[i],
+      answer: Number(answers[i]),
+      answer1: answers1[i],
+      answer2: answers2[i],
+      answer3: answers3[i],
+      answer4: answers4[i]
+    }
+    test.push(test_question);
+    console.log(test_question);
+  }
+
+  models.quiz.destroy(
+    {where: {
+      testid: testid
+    }
+  })
+  .then( () => {
+    models.quiz.bulkCreate(test)
+		.then(() => {
+			req.flash('success', 'Test updated succesfully');
+			res.redirect('/tests/' + subject + '/' + new_testid + '/solved');
+		})
+		.catch(Sequelize.ValidationError, error => {
+			req.flash('error', 'There are errors in the form:');
+			error.errors.forEach(({message}) => req.flash('error', message));
+			res.render('quizzes/new', {test});
+		})
+		.catch(error => {
+			req.flash('error', 'Error updating the Quiz: ' + error.message);
+			next(error);
+		});
+	}).catch(error => {
+		req.flash('error', 'Error updating the Test: ' + error.message);
+		next(error);
+	});
+};
+
 //POST /addtest/:subject/
 exports.addTest = (req, res, next) => {
   let test = [];
@@ -232,12 +317,12 @@ exports.addTest = (req, res, next) => {
   const year = req.body.year;
   const month = req.body.month;
 
-  const questions = req.body.question
-  const answers = req.body.answer
-  const answers1 = req.body.answer1 
-  const answers2 = req.body.answer2
-  const answers3 = req.body.answer3 
-  const answers4 = req.body.answer4 
+  const questions = req.body.question;
+  const answers = req.body.answer;
+  const answers1 = req.body.answer1; 
+  const answers2 = req.body.answer2;
+  const answers3 = req.body.answer3;
+  const answers4 = req.body.answer4;
 
   //Create test
   for (var i in questions){
@@ -274,8 +359,7 @@ exports.addTest = (req, res, next) => {
 		});
 };
 
-
-//PUT /tests/:subject/:desc
+//PUT /tests/:subject/:testid
 //Se encarga de comprobar que las preguntas del tests son correctas, incorrectas, o no contestadas;
 //a partir del array del test guardado como dato de la sesion, debe dar paso a una vista donde se muestren
 //las preguntas en rojo si hemos fallado y en verde si acertamos, la puntuación total etc
@@ -460,8 +544,6 @@ exports.checkTest = (req, res, next) => {
   res.render('tests/result_test.ejs', {test,answers,subject,testid,desc,correct,incorrect,nonanswered} );
 };
 
-
-
 //GET /quizzes/:quizId/play
 exports.playQuiz = (req, res, next) => {
   const quiz = req.quiz;
@@ -474,6 +556,25 @@ exports.playQuiz = (req, res, next) => {
 	}else{
 		res.render('quizzes/play.ejs', {quiz,subject,testid,desc} );
 	}
+};
+
+//DEL /tests/:subject/:testid
+exports.deleteTest = (req, res, next) => {
+  const subject = req.params.subject;
+  const testid = req.params.testid;
+
+  models.quiz.destroy(
+    {where: {
+      testid: testid
+    }
+  })
+  .then( () => {
+    req.flash('success', 'Test deleted successfully.');
+		res.redirect('/tests/' + subject);
+	}).catch(error => {
+		req.flash('error', 'Error deleting the Test: ' + error.message);
+		next(error);
+	});
 };
 
 //PUT /quizzes/:quizId/check

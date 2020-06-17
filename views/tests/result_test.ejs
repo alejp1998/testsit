@@ -55,7 +55,7 @@
                                   <% if(Number(quiz.answer) === 1){ %>
                                     <li>
                                       <p class="subtitle is-4"><b>A.  <%=quiz.answer1%></b></p>
-                                    </li>Créditos
+                                    </li>
                                   <% }else{ %>
                                     <li>
                                       <p class="subtitle is-5">A.  <%=quiz.answer1%></p>
@@ -104,6 +104,8 @@
             <a href="/tests/<%=subject%>" class="button is-info">Volver</a>
 
             <a href="/tests/<%=subject%>/<%=testid%>" class="button is-warning">Intentar de nuevo</a>
+
+            <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-primary">Solución</a>
 
         </div>
     </div>

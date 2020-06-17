@@ -64,16 +64,22 @@ router.get('/tests/sonidoimagen', quizController.sonidoimagen);
 router.get('/tests/telematica', quizController.telematica);
 
 router.get('/tests/:subject',quizController.subjectTests);
-router.get('/newtest/:subject',quizController.addTestForm);
+router.get('/newtest/:subject',sessionController.adminRequired,quizController.addTestForm);
+router.get('/edittest/:subject/:testid',sessionController.adminRequired,quizController.editTestForm);
 router.get('/tests/:subject/:testid',quizController.playTest);
 router.get('/tests/:subject/:testid/solved',quizController.solvedTest);
 
 /*PUT tests*/
 router.put('/tests/:subject/:desc',quizController.checkTest);
+
 /*POST tests*/
 router.post('/addtest/:subject',sessionController.adminRequired, quizController.addTest);
 router.post('/newtest/:subject',sessionController.adminRequired, quizController.addTestQuestions);
+router.post('/edittest/:subject/:testid',sessionController.adminRequired,quizController.editTest);
+
 /*DELETE tests*/
+router.delete('/tests/:subject/:testid',sessionController.adminRequired,quizController.deleteTest);
+
 
 /*------- USERS ROUTES --------*/
 
