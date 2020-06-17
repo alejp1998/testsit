@@ -139,15 +139,17 @@ exports.telematica = (req, res, next) => {
 exports.subjectTests = (req, res, next) => {
   const subject = req.params.subject;
   let testids = [];
+  let descs = [];
   models.quiz.findAll({
     where: {subject: subject}
   }).then(quizzes => {
     for (var i in quizzes){
       if (!testids.includes(quizzes[i].testid)){
         testids.push(quizzes[i].testid)
+        descs.push(quizzes[i].desc)
       }
     }
-    res.render('tests/subject_tests.ejs', {subject,testids} );
+    res.render('tests/subject_tests.ejs', {subject,testids,descs} );
   }).catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);
     next(error);
@@ -278,7 +280,6 @@ exports.editTest = (req, res, next) => {
       answer4: answers4[i]
     }
     test.push(test_question);
-    console.log(test_question);
   }
 
   models.quiz.destroy(
@@ -340,7 +341,6 @@ exports.addTest = (req, res, next) => {
       answer4: answers4[i]
     }
     test.push(test_question);
-    console.log(test_question);
   }
 
   models.quiz.bulkCreate(test)

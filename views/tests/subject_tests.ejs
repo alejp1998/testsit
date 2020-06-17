@@ -15,6 +15,7 @@
 
     <% for (var i in testids) { %>
     <% var testid = testids[i]; %>
+    <% var desc = descs[i]; %>
 
       <div class="box is-info">
           <div class="columns">
@@ -35,6 +36,7 @@
             <% } %>
             
           </div>
+          <p class="subtitle is-4"><%=desc%></p>
       </div>
 
     <% } %>
