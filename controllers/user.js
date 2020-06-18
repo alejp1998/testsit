@@ -61,40 +61,60 @@ exports.show = (req, res, next) => {
 //POST /signup
 exports.newUser = (req,res,next) => {
     const username = req.body.username;
+    const sign_email = req.body.email;
     const password = req.body.password;
     const password2 = req.body.password2;
-    models.User.findOne({where: {username: username}})
-    .then(user => {
-        if(user){
-            req.flash('error','User already exists');
-            res.redirect('/signup');
-        }else{
-            if(password===password2){
-                let user = models.User.build({
-                    username,
-                    password
-                });
 
-                user.save({fields: ["username", "password", "salt"]})
-                .then(() => {
-                    req.flash('success','User created succesfully');
-                    res.redirect('/login');
-                })
-                .catch(Sequelize.ValidationError, error => {
-                    req.flash('error', 'There are errors in the form:');
-                    error.errors.forEach(({message}) => req.flash('error', message));
+    models.email.findOne({where: {email: sign_email}})
+    .then(email => {
+        if(!email){
+            req.flash('error','Email is not invited');
+            res.redirect('/signup');
+        }else if(!email.used){
+            models.User.findOne({where: {username: username}})
+            .then(user => {
+                if(user){
+                    req.flash('error','User already exists');
                     res.redirect('/signup');
-                });
-            }else{
-                req.flash('error','Passwords do not match');
-                res.redirect('/signup');
-            }
+                }else{
+                    if(password===password2){
+                        let user = models.User.build({
+                            username,
+                            email: sign_email,
+                            password
+                        });
+
+                        user.save({fields: ["username", "email", "password", "salt"]})
+                        .then(() => {
+                            email.used = true;
+                            email.save({fields: ["used"]})
+                            .then(() => {
+                                req.session.user = user;
+                                req.flash('success','User created succesfully');
+                                res.redirect('/');
+                            });
+                        })
+                        .catch(Sequelize.ValidationError, error => {
+                            req.flash('error', 'There are errors in the form:');
+                            error.errors.forEach(({message}) => req.flash('error', message));
+                            res.redirect('/signup');
+                        });
+                    }else{
+                        req.flash('error','Passwords do not match');
+                        res.redirect('/signup');
+                    }
+                }
+            })
+        }else{
+            req.flash('error','Email is already used');
+            res.redirect('/signup');
         }
     })
-    .catch(error => {
-        req.flash('error','Error creating user: ' + error.message);
+    .catch( error => {
+        req.flash('error','Error signing up: ' + error.message);
         next(error);
     });
+    
 };
 
 //POST /login
@@ -129,7 +149,6 @@ exports.logIn = (req,res,next) => {
 
 // GET /users/:userId/edit
 exports.edit = (req, res, next) => {
-
     const {user} = req;
 
     res.render('users/edit', {user});
@@ -138,7 +157,6 @@ exports.edit = (req, res, next) => {
 
 // PUT /users/:userId
 exports.update = (req, res, next) => {
-
     let {user} = req;
     let fields_to_update = [];
     const username = req.body.username;
@@ -190,18 +208,23 @@ exports.logOut = (req,res,next) => {
 
 // DELETE /users/:userId
 exports.destroy = (req, res, next) => {
+    const {user} = req;
 
-    req.user.destroy()
-    .then(() => {
-
-        // Deleting logged user.
-        if (req.session.user && req.session.user.id === req.user.id) {
-            // Close the user session
-            delete req.session.user;
-        }
-
-        req.flash('success', 'User deleted successfully.');
-        res.redirect('/goback');
+    models.email.findOne({where: {email: user.email}})
+    .then(email => {
+        email.used = false;
+        email.save({fields: ["used"]})
+        .then(() => {
+            user.destroy()
+            .then(() => {
+                // Deleting logged user
+                if (req.session.user && req.session.user.id === req.user.id) {
+                    delete req.session.user;
+                }
+                req.flash('success', 'User deleted successfully.');
+                res.redirect('/goback');
+            })
+        });
     })
     .catch(error => next(error));
 };

@@ -25,6 +25,11 @@ module.exports = function (sequelize, DataTypes) {
             unique: true,
             validate: {notEmpty: {msg: "Username must not be empty."}}
         },
+        email: {
+            type: DataTypes.STRING,
+            unique: true,
+            validate: {notEmpty: {msg: "Email must not be empty."}}
+        },
         password: {
             type: DataTypes.STRING,
             validate: {notEmpty: {msg: "Password must not be empty."}},
@@ -38,6 +43,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING
         },
         isAdmin: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        isEditor: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },

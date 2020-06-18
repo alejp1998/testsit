@@ -14,9 +14,12 @@ module.exports = {
           username: {
             type: Sequelize.STRING,
             unique: true,
-            validate: {
-              notEmpty: {msg: "Username must not be empty."}
-            }
+            validate: {notEmpty: {msg: "Username must not be empty."}}
+          },
+          email: {
+            type: Sequelize.STRING,
+            unique: true,
+            validate: {notEmpty: {msg: "Email must not be empty."}}
           },
           password: {
             type: Sequelize.STRING,
@@ -36,6 +39,10 @@ module.exports = {
             defaultValue: 0
           },
           isAdmin: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+          },
+          isEditor: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
           },

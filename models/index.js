@@ -12,11 +12,14 @@ sequelize.import(path.join(__dirname, 'quiz'));
 // Import the definition of the Users Table from user.js
 sequelize.import(path.join(__dirname,'user'));
 
+// Emails
+sequelize.import(path.join(__dirname,'email'));
+
 // Session
 sequelize.import(path.join(__dirname,'session'));
 
 //Charge models
-const {quiz,tip,User} = sequelize.models;
+const {quiz,email,User} = sequelize.models;
 
 // Relation 1-to-N between User and Quiz:
 User.hasMany(quiz, {foreignKey: 'authorId'});
