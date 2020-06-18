@@ -9,7 +9,12 @@ module.exports = {
                 type: Sequelize.STRING,
                 primaryKey: true,
                 unique: true,
-                validate: {notEmpty: {msg: "Username must not be empty."}}
+                validate: {notEmpty: {msg: "Email must not be empty."}}
+            },
+            username: {
+              type: Sequelize.STRING,
+              unique: true,
+              validate: {notEmpty: {msg: "Username must not be empty."}}
             },
             used: {
                 type: Sequelize.BOOLEAN,

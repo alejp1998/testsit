@@ -7,6 +7,12 @@ module.exports = (sequelize,DataTypes) => {
                 type: DataTypes.STRING,
                 primaryKey: true,
                 unique: true,
+                validate: {notEmpty: {msg: "Email must not be empty."}}
+            },
+            username: {
+                type: DataTypes.STRING,
+                unique: true,
+                defaultValue: '',
                 validate: {notEmpty: {msg: "Username must not be empty."}}
             },
             used: {

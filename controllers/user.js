@@ -87,7 +87,8 @@ exports.newUser = (req,res,next) => {
                         user.save({fields: ["username", "email", "password", "salt"]})
                         .then(() => {
                             email.used = true;
-                            email.save({fields: ["used"]})
+                            email.username = username;
+                            email.save({fields: ["used", "username"]})
                             .then(() => {
                                 req.session.user = user;
                                 req.flash('success','User created succesfully');
@@ -165,7 +166,7 @@ exports.update = (req, res, next) => {
 
 
     if(username){
-        user.username  = username;
+        user.username = username;
         fields_to_update.push('username');
     }
 
@@ -183,8 +184,14 @@ exports.update = (req, res, next) => {
 
     user.save({fields: fields_to_update})
     .then(user => {
-        req.flash('success', 'User updated successfully.');
-        res.redirect('/users/' + user.id);
+        models.email.findOne({where: {email: user.email}})
+        .then(email => {
+            email.save({fields: fields_to_update})
+            .then(() => {
+                req.flash('success', 'User updated successfully.');
+                res.redirect('/users/' + user.id);
+            })
+        })
     })
     .catch(Sequelize.ValidationError, error => {
         req.flash('error', 'There are errors in the form:');
@@ -213,7 +220,8 @@ exports.destroy = (req, res, next) => {
     models.email.findOne({where: {email: user.email}})
     .then(email => {
         email.used = false;
-        email.save({fields: ["used"]})
+        email.username = '';
+        email.save({fields: ["used", "username"]})
         .then(() => {
             user.destroy()
             .then(() => {
@@ -227,4 +235,50 @@ exports.destroy = (req, res, next) => {
         });
     })
     .catch(error => next(error));
+};
+
+
+// GET /emails
+exports.emailsIndex = (req, res, next) => {
+    let countOptions = {
+        where: {},
+        include: []
+    };
+
+    models.email.count()
+    .then(count => {
+        //Pagination
+        const page_items = 5;
+        //The page shown is in the query
+        const pageno = Number(req.query.pageno) || 1;
+        //Create String with HTML to render pagination buttons
+        res.locals.paginate_control = paginate(count, page_items, pageno, req.url);
+
+        const findOptions = {
+            ...countOptions,
+            offset: page_items*(pageno-1),
+            limit: page_items
+        };
+
+        return models.email.findAll(findOptions);
+    })
+    .then(emails => {
+        res.render('emails/index', {emails});
+    })
+    .catch(error => next(error));
+};
+
+// POST /emails
+exports.emailsAdd = (req, res, next) => {
+    
+};
+
+// PUT /emails
+exports.emailsEdit = (req, res, next) => {
+    
+};
+
+// DELETE /emails
+exports.emailsDestroy = (req, res, next) => {
+    
 };

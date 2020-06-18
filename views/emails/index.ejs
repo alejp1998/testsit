@@ -1,0 +1,33 @@
+<div class="content">
+    <p class="title is-1">Emails</p>
+    
+    <div class="box">
+        <form method="get" action="<%=url%>">
+            <span class="tag is-success is-large">Invitar email</span>
+            <input type="text" class="input is-info" name="search" value="<%= locals.search || '' %>" placeholder="pepito@alumnos.upm.es" autocomplete="off" />
+        </form>
+    </div>
+    <% for (var i in emails) { %>
+        
+        <div class="box">
+            <div class="columns">
+                <div class="column">
+                    <a class="subtitle is-3" href="/emails/<%=emails[i].id%>" ><%= emails[i].email %></a>
+                </div>
+                <% if(emails[i].used) { %>
+                <div class="column is-narrow">
+                    <span class="tag is-info is-medium">USED<span class="tag is-primary is-small"><%=emails[i].username%></span></span>
+                    
+                </div>    
+                <% }else{ %>
+                <div class="column is-narrow">
+                    <a href="/emails/<%=emails[i].id%>?_method=DELETE"
+                        onClick="return confirm('Delete email: <%= emails[i].email %>');"
+                        class="button is-medium is-danger">Delete</a>
+                </div>  
+                <% } %>
+            </div>
+        </div>
+        
+    <% } %>
+</div>

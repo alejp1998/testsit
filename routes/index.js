@@ -10,7 +10,7 @@ var sessionController = require('../controllers/session.js');
 
 /*Autoload for routes with param quizId*/
 router.param('userId', userController.load);
-router.param('quizId',quizController.load);
+router.param('quizId', quizController.load);
 
 /*------- HOME ROUTES --------*/
 
@@ -100,6 +100,18 @@ router.post('/signup', userController.newUser);
 router.put('/users/:userId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, userController.update);
 /* DELETE USERS */
 router.delete('/users/:userId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, userController.destroy);
+
+
+/*------- EMAILS ROUTES --------*/
+
+/* GET Emails */
+router.get('/emails', sessionController.adminRequired, userController.emailsIndex);
+/* POST Emails */
+router.post('/emails/:emailId(\\d+)', sessionController.adminRequired, userController.emailsAdd);
+/* PUT Emails */
+router.put('/emails/:emailId(\\d+)', sessionController.adminRequired, userController.emailsEdit);
+/* DELETE Emails */
+router.delete('/users/:emailId(\\d+)', sessionController.adminRequired, userController.emailsDestroy);
 
 /*------- STATS ROUTES --------*/
 

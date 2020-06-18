@@ -82,6 +82,11 @@
             <% } %>
         </div>
       </div>
+      
+      <% var isAdmin = session.user && session.user.isAdmin; %>
+      <% if(isAdmin){%>
+        <a class="navbar-item" href="/emails">Emails</a>
+      <% } %>
 
       <a class="navbar-item" href="/credits">Créditos</a>
 

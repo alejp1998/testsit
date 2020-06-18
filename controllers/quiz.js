@@ -322,7 +322,7 @@ exports.editTest = (req, res, next) => {
 exports.addTest = (req, res, next) => {
   let test = [];
 
-  N = 30;
+  N = 100;
   let empty_answers = new Array(N); 
   for (var i = 0; i < N; i++) empty_answers[i] = ''; 
 
