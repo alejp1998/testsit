@@ -97,14 +97,14 @@ exports.newUser = (req,res,next) => {
     });
 };
 
-//GET /login
+//POST /login
 exports.logIn = (req,res,next) => {
     if(req.session.user){
         req.flash('error','You are logged in');
         return res.redirect('/');
     }
-    const username = req.query.username;
-    const password = req.query.password;
+    const username = req.body.username;
+    const password = req.body.password;
     models.User.findOne({where: {username: username}})
     .then(user => {
         if(!user){

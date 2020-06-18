@@ -406,168 +406,18 @@ exports.checkTest = (req, res, next) => {
 
   testid = test[0].testid;
   desc = test[0].desc;
+  
+  let answers = req.body;
+  N = Object.keys(answers).length;
 
-  //Creamos array que obtiene las respuestas que hemos dado del quiz
-  let answers = [];
-  if(req.body.answer1){
-    answers.push(req.body.answer1);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer2){
-    answers.push(req.body.answer2);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer3){
-    answers.push(req.body.answer3);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer4){
-    answers.push(req.body.answer4);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer5){
-    answers.push(req.body.answer5);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer6){
-    answers.push(req.body.answer6);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer7){
-    answers.push(req.body.answer7);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer8){
-    answers.push(req.body.answer8);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer9){
-    answers.push(req.body.answer9);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer10){
-    answers.push(req.body.answer10);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer11){
-    answers.push(req.body.answer11);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer12){
-    answers.push(req.body.answer12);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer13){
-    answers.push(req.body.answer13);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer14){
-    answers.push(req.body.answer14);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer15){
-    answers.push(req.body.answer15);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer16){
-    answers.push(req.body.answer16);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer17){
-    answers.push(req.body.answer17);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer18){
-    answers.push(req.body.answer18);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer19){
-    answers.push(req.body.answer19);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer20){
-    answers.push(req.body.answer20);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer21){
-    answers.push(req.body.answer21);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer22){
-    answers.push(req.body.answer22);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer23){
-    answers.push(req.body.answer23);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer24){
-    answers.push(req.body.answer25);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer25){
-    answers.push(req.body.answer25);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer26){
-    answers.push(req.body.answer26);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer27){
-    answers.push(req.body.answer27);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer28){
-    answers.push(req.body.answer28);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer29){
-    answers.push(req.body.answer29);
-  }else{
-    answers.push('');
-  }
-  if(req.body.answer30){
-    answers.push(req.body.answer30);
-  }else{
-    answers.push('');
-  }
-
-  for(var i in test){
-    if(answers[i] === '0'){
+  for (var i = 0; i < N; i++) {
+    if(answers['answer'+ i] === '0'){
       test[i].result = 'nonanswered';
       nonanswered++;
-    }else if( Number(test[i].answer) === Number(answers[i]) ){
+    }else if( Number(test[i].answer) === Number(answers['answer'+ i]) ){
       test[i].result = 'correct';
       correct++;
-    }else if( Number(test[i].answer) !== Number(answers[i]) ){
+    }else if( Number(test[i].answer) !== Number(answers['answer'+ i]) ){
       test[i].result = 'incorrect';
       incorrect++;
     }

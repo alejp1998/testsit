@@ -30,50 +30,49 @@
 
                               <div class="box">
                                 <h3 class="subtitle is-4"><span class="tag is-info is-medium"><%=n%></span>  <%=quiz.question%></h3>
-                                    <div class="control">
+                                    <div class="control" id="control<%=i%>">
                                       <% if(quiz.answer1){ %>
                                       <p class="subtitle is-5"><label class="radio">
-                                        <input type="radio" name="answer<%=n%>" value="1">
+                                        <input type="radio" name="answer<%=i%>" value="1">
                                         <b>A.</b>  <%=quiz.answer1%>
                                       </label></p>
                                       <% } %>
                                       <% if(quiz.answer2){ %>
                                       <p class="subtitle is-5"><label class="radio">
-                                        <input type="radio" name="answer<%=n%>" value="2">
+                                        <input type="radio" name="answer<%=i%>" value="2">
                                         <b>B.</b>  <%=quiz.answer2%>
                                       </label></p>
                                       <% } %>
                                       <% if(quiz.answer3){ %>
                                       <p class="subtitle is-5"><label class="radio">
-                                        <input type="radio" name="answer<%=n%>" value="3">
+                                        <input type="radio" name="answer<%=i%>" value="3">
                                         <b>C.</b>  <%=quiz.answer3%>
                                       </label></p>
                                       <% } %>
                                       <% if(quiz.answer4){ %>
                                       <p class="subtitle is-5"><label class="radio">
-                                        <input type="radio" name="answer<%=n%>" value="4">
+                                        <input type="radio" name="answer<%=i%>" value="4">
                                         <b>D.</b>  <%=quiz.answer4%>
                                       </label></p>
                                       <% } %>
                                       <% if(quiz.answer5){ %>
                                       <p class="subtitle is-5"><label class="radio">
-                                        <input type="radio" name="answer<%=n%>" value="5">
+                                        <input type="radio" name="answer<%=i%>" value="5">
                                         <b>E.</b>  <%=quiz.answer5%>
                                       </label></p>
                                       <% } %>
                                       <% if(quiz.answer6){ %>
                                       <p class="subtitle is-5"><label class="radio">
-                                        <input type="radio" name="answer<%=n%>" value="6">
+                                        <input type="radio" name="answer<%=i%>" value="6">
                                         <b>F.</b>  <%=quiz.answer6%>
                                       </label></p>
                                       <% } %>
                                       <br>
                                       <p class="subtitle is-5"><label class="radio">
-                                        <input type="radio" name="answer<%=n%>" value="0" checked>
+                                        <input type="radio" name="answer<%=i%>" value="0" checked>
                                         <b>Omitir</b>
                                       </label></p>
                                     </div>
-                                <br>
                               </div>
 
                       <% } %>

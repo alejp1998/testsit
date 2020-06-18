@@ -90,11 +90,11 @@ router.get('/login', (req,res,next) => {
     res.render('login.ejs');
 });
 router.get('/users', userController.index);
-router.get('/check', userController.logIn);
 router.get('/logout', userController.logOut);
 router.get('/users/:userId(\\d+)',sessionController.loginRequired, userController.show);
 router.get('/users/:userId(\\d+)/edit', sessionController.loginRequired, sessionController.adminOrMyselfRequired, userController.edit);
 /* POST Users */
+router.post('/check', userController.logIn);
 router.post('/signup', userController.newUser);
 /* PUT USERS */
 router.put('/users/:userId(\\d+)', sessionController.loginRequired, sessionController.adminOrMyselfRequired, userController.update);

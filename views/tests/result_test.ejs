@@ -3,20 +3,18 @@
   <div class="box">
       <div class="columns">
           <div class="column">
-          <p class="subtitle is-2">
-              Test Id: <%=testid%>
-          </p>
+            <p class="subtitle is-2">Test Id: <%=testid%></p>
           </div>
           <div class="column is-narrow">
-          <a href="/tests/<%=subject%>"><%=subject%></a>
+            <a href="/tests/<%=subject%>"><%=subject%></a>
           </div>
       </div>
       <div class="columns">
           <div class="column">
-              <p class="subtitle is-4">Descripción: <%=desc%></p>
+            <p class="subtitle is-4">Descripción: <%=desc%></p>
           </div>
           <div class="column is-narrow">
-              <span class="tag has-text-white has-background-info is-large">RESULTADO</span>
+            <span class="tag has-text-white has-background-info is-large">RESULTADO</span>
           </div>
       </div>
       <br>
@@ -35,100 +33,123 @@
 
     
 
-    <div class="columns">
-        <div class="column">
+  <div class="columns">
+      <div class="column">
 
-              <% for (var i in test) { %>
-                  <% var quiz = test[i]; %>
-                  <% var n = Number(i) + 1; %>
+            <% for (var i in test) { %>
+                <% var quiz = test[i]; %>
+                <% var n = Number(i) + 1; %>
 
-                        <div class="box">
-                          <% if(quiz.result === 'correct'){ %>
-                            <h3 class="subtitle is-4"><span class="tag has-background-success is-medium"><%=n%></span>  <%=quiz.question%></h3>
-                          <% }else if(quiz.result === 'incorrect'){ %>
-                            <h3 class="subtitle is-4"><span class="tag has-background-danger is-medium"><%=n%></span>  <%=quiz.question%></h3>
-                          <% }else{ %>
-                            <h3 class="subtitle is-4"><span class="tag has-background-light is-medium"><%=n%></span>  <%=quiz.question%></h3>
-                          <% } %>
-                              <ul>
-                                <% if(quiz.answer1){ %>
-                                  <% if(Number(quiz.answer) === 1){ %>
-                                    <li>
-                                      <p class="subtitle is-4"><b>A.  <%=quiz.answer1%></b></p>
-                                    </li>
-                                  <% }else{ %>
-                                    <li>
-                                      <p class="subtitle is-5">A.  <%=quiz.answer1%></p>
-                                    </li>
-                                  <% } %>
+                      <div class="box">
+                        <% if(quiz.result === 'correct'){ %>
+                          <h3 class="subtitle is-4"><span class="tag has-background-success is-medium"><%=n%></span>  <%=quiz.question%></h3>
+                        <% }else if(quiz.result === 'incorrect'){ %>
+                          <h3 class="subtitle is-4"><span class="tag has-background-danger is-medium"><%=n%></span>  <%=quiz.question%></h3>
+                        <% }else{ %>
+                          <h3 class="subtitle is-4"><span class="tag has-background-light is-medium"><%=n%></span>  <%=quiz.question%></h3>
+                        <% } %>
+                            <ul>
+                              <% if(quiz.answer1){ %>
+                                <% if(Number(quiz.answer) === 1){ %>
+                                  <li>
+                                    <p class="subtitle is-4"><b class="has-text-success">A.  </b><%=quiz.answer1%></p>
+                                  </li>
+                                <% }else if(answers['answer'+i] === '1'){ %>
+                                  <li>
+                                    <p class="subtitle is-5"><b class="has-text-danger">A.  </b><%=quiz.answer1%></p>
+                                  </li>
+                                <% }else{ %>
+                                  <li>
+                                    <p class="subtitle is-5">A.  <%=quiz.answer1%></p>
+                                  </li>
                                 <% } %>
-                                <% if(quiz.answer2){ %>
-                                  <% if(Number(quiz.answer) === 2){ %>
-                                    <li>
-                                      <p class="subtitle is-4"><b>B.  <%=quiz.answer2%></b></p>
-                                    </li>
-                                  <% }else{ %>
-                                    <li>
-                                      <p class="subtitle is-5">B.  <%=quiz.answer2%></p>
-                                    </li>
-                                  <% } %>
+                              <% } %>
+                              <% if(quiz.answer2){ %>
+                                <% if(Number(quiz.answer) === 2){ %>
+                                  <li>
+                                    <p class="subtitle is-4"><b class="has-text-success">B.  </b><%=quiz.answer2%></p>
+                                  </li>
+                                <% }else if(answers['answer'+i] === '2'){ %>
+                                  <li>
+                                    <p class="subtitle is-5"><b class="has-text-danger">B.  </b><%=quiz.answer2%></p>
+                                  </li>
+                                <% }else{ %>
+                                  <li>
+                                    <p class="subtitle is-5">B.  <%=quiz.answer2%></p>
+                                  </li>
                                 <% } %>
-                                <% if(quiz.answer3){ %>
-                                  <% if(Number(quiz.answer) === 3){ %>
-                                    <li>
-                                      <p class="subtitle is-4"><b>C.  <%=quiz.answer3%></b></p>
-                                    </li>
-                                  <% }else{ %>
-                                    <li>
-                                      <p class="subtitle is-5">C.  <%=quiz.answer3%></p>
-                                    </li>
-                                  <% } %>
+                              <% } %>
+                              <% if(quiz.answer3){ %>
+                                <% if(Number(quiz.answer) === 3){ %>
+                                  <li>
+                                    <p class="subtitle is-4"><b class="has-text-success">C.  </b><%=quiz.answer3%></p>
+                                  </li>
+                                <% }else if(answers['answer'+i] === '3'){ %>
+                                  <li>
+                                    <p class="subtitle is-5"><b class="has-text-danger">C.  </b><%=quiz.answer3%></p>
+                                  </li>
+                                <% }else{ %>
+                                  <li>
+                                    <p class="subtitle is-5">C.  <%=quiz.answer3%></p>
+                                  </li>
                                 <% } %>
-                                <% if(quiz.answer4){ %>
-                                  <% if(Number(quiz.answer) === 4){ %>
-                                    <li>
-                                      <p class="subtitle is-4"><b>D.  <%=quiz.answer4%></b></p>
-                                    </li>
-                                  <% }else{ %>
-                                    <li>
-                                      <p class="subtitle is-5">D.  <%=quiz.answer4%></p>
-                                    </li>
-                                  <% } %>
+                              <% } %>
+                              <% if(quiz.answer4){ %>
+                                <% if(Number(quiz.answer) === 4){ %>
+                                  <li>
+                                    <p class="subtitle is-4"><b class="has-text-success">D.  </b><%=quiz.answer4%></p>
+                                  </li>
+                                <% }else if(answers['answer'+i] === '4'){ %>
+                                  <li>
+                                    <p class="subtitle is-5"><b class="has-text-danger">D.  </b><%=quiz.answer4%></p>
+                                  </li>
+                                <% }else{ %>
+                                  <li>
+                                    <p class="subtitle is-5">D.  <%=quiz.answer4%></p>
+                                  </li>
                                 <% } %>
-                                <% if(quiz.answer5){ %>
-                                  <% if(Number(quiz.answer) === 5){ %>
-                                    <li>
-                                      <p class="subtitle is-4"><b>E.  <%=quiz.answer5%></b></p>
-                                    </li>
-                                  <% }else{ %>
-                                    <li>
-                                      <p class="subtitle is-5">E.  <%=quiz.answer5%></p>
-                                    </li>
-                                  <% } %>
+                              <% } %>
+                              <% if(quiz.answer5){ %>
+                                <% if(Number(quiz.answer) === 5){ %>
+                                  <li>
+                                    <p class="subtitle is-4"><b class="has-text-success">E.  <%=quiz.answer5%></b></p>
+                                  </li>
+                                <% }else if(answers['answer'+i] === '5'){ %>
+                                  <li>
+                                    <p class="subtitle is-5"><b class="has-text-danger">E.  </b><%=quiz.answer5%></p>
+                                  </li>
+                                <% }else{ %>
+                                  <li>
+                                    <p class="subtitle is-5">E.  <%=quiz.answer5%></p>
+                                  </li>
                                 <% } %>
-                                <% if(quiz.answer6){ %>
-                                  <% if(Number(quiz.answer) === 6){ %>
-                                    <li>
-                                      <p class="subtitle is-4"><b>F.  <%=quiz.answer6%></b></p>
-                                    </li>
-                                  <% }else{ %>
-                                    <li>
-                                      <p class="subtitle is-5">F.  <%=quiz.answer6%></p>
-                                    </li>
-                                  <% } %>
+                              <% } %>
+                              <% if(quiz.answer6){ %>
+                                <% if(Number(quiz.answer) === 6){ %>
+                                  <li>
+                                    <p class="subtitle is-4"><b class="has-text-success">F.  <%=quiz.answer6%></b></p>
+                                  </li>
+                                <% }else if(answers['answer'+i] === '6'){ %>
+                                  <li>
+                                    <p class="subtitle is-5"><b class="has-text-danger">F.  </b><%=quiz.answer6%></p>
+                                  </li>
+                                <% }else{ %>
+                                  <li>
+                                    <p class="subtitle is-5">F.  <%=quiz.answer6%></p>
+                                  </li>
                                 <% } %>
-                            </ul>
-                            <br><br>
-                        </div>
+                              <% } %>
+                          </ul>
+                      </div>
 
-            <% } %>
+          <% } %>
 
-            <a href="/tests/<%=subject%>" class="button is-info">Volver</a>
+          <a href="/tests/<%=subject%>" class="button is-info">Volver</a>
 
-            <a href="/tests/<%=subject%>/<%=testid%>" class="button is-warning">Intentar de nuevo</a>
+          <a href="/tests/<%=subject%>/<%=testid%>" class="button is-warning">Intentar de nuevo</a>
 
-            <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-primary">Solución</a>
+          <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-primary">Solución</a>
 
-        </div>
-    </div>
+      </div>
+  </div>
 </div>
