@@ -11,14 +11,17 @@ exports.loginRequired = (req, res, next) => {
 
 // MW that allows to pass only if the logged useer in is admin.
 exports.adminRequired = (req, res, next) => {
-
-    const isAdmin = !!req.session.user.isAdmin;
-
-    if (isAdmin) {
-        next();
+    if (!req.session.user) {
+        req.flash('error','Login Required');
+        res.redirect('/login');
     } else {
-        console.log('Prohibited route: the logged in user is not an administrator.');
-        res.send(403);
+        const isAdmin = !!req.session.user.isAdmin;
+        if (isAdmin) {
+            next();
+        } else {
+            console.log('Prohibited route: the logged in user is not an administrator.');
+            res.send(403);
+        }
     }
 };
 

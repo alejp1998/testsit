@@ -13,8 +13,7 @@ module.exports = {
             },
             username: {
               type: Sequelize.STRING,
-              unique: true,
-              validate: {notEmpty: {msg: "Username must not be empty."}}
+              unique: true
             },
             used: {
                 type: Sequelize.BOOLEAN,

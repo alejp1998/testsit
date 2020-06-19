@@ -8,7 +8,6 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <link href='https://fonts.googleapis.com/css?family=Megrim' rel='stylesheet'>
     
     <script>
       MathJax = {
@@ -24,20 +23,28 @@
 
     <style>
         .logo1 {
-            font-family: 'Megrim'; font-size: 40px;
+            color: white;
+            font-size: 40px;
         }
         .logo {
             font-size: 25px;
         }
         .navlogo {
-            background: linear-gradient(to left,#16A085,#48C9B0);
+            background: linear-gradient(to right,#7A10DD ,white);
+        }
+        .wrapper {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .background {
         }
     </style>
 
 </head>
 
-<body class="body">
+<body class="background">
 
+<div class="wrapper">
 <nav class="navbar navlogo logo" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a class="navbar-item logo1" href="/">(T)E(S)TSIT</a>
@@ -53,8 +60,9 @@
     <div class="navbar-start">
 
       <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link" href="/quizzes">Tests (por curso)</a>
+        <a class="navbar-link" href="/">Tests (por curso)</a>
         <div class="navbar-dropdown is-boxed">
+            <a class="navbar-item" href="/quizzes">Preguntas</a>
             <a class="navbar-item" href="/tests/primero">Primero</a>
             <a class="navbar-item" href="/tests/segundo">Segundo</a>
             <a class="navbar-item" href="/tests/tercero">Tercero</a>
@@ -77,16 +85,15 @@
                 <a class="navbar-item" href="/login">Inicia Sesión</a>
                 <a class="navbar-item" href="/signup">Nueva Cuenta</a>
             <% }else{ %>
-                <a class="navbar-item" href="/users/<%= session.user.id %>" ><%= session.user.username%></a>
+                <% var isAdmin = session.user && session.user.isAdmin; %>
+                <% if(isAdmin){%>
+                  <a class="navbar-item" href="/emails">Emails</a>
+                <% } %>
+                <a class="navbar-item" href="/users/<%=session.user.id%>">Mi Perfil:&nbsp;<b><%=session.user.username%></b></a>
                 <a class="navbar-item" href="/logout">Cerrar Sesión</a>
             <% } %>
         </div>
       </div>
-      
-      <% var isAdmin = session.user && session.user.isAdmin; %>
-      <% if(isAdmin){%>
-        <a class="navbar-item" href="/emails">Emails</a>
-      <% } %>
 
       <a class="navbar-item" href="/credits">Créditos</a>
 
@@ -183,6 +190,20 @@
     </p>
   </div>
 </footer>
+
+</div>
+
+<canvas class="background"></canvas>
+<script>
+  window.onload = function() {
+    Particles.init({
+      selector: '.background'
+    });
+  };
+  particlesJS.load('background','basic.json');
+</script>
+
+<script src="path/to/particles.min.js"></script>
 
 </body>
 </html>

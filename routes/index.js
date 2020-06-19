@@ -107,11 +107,11 @@ router.delete('/users/:userId(\\d+)', sessionController.loginRequired, sessionCo
 /* GET Emails */
 router.get('/emails', sessionController.adminRequired, userController.emailsIndex);
 /* POST Emails */
-router.post('/emails/:emailId(\\d+)', sessionController.adminRequired, userController.emailsAdd);
+router.post('/emails', sessionController.adminRequired, userController.emailsAdd);
 /* PUT Emails */
-router.put('/emails/:emailId(\\d+)', sessionController.adminRequired, userController.emailsEdit);
+router.put('/emails/:email', sessionController.adminRequired, userController.emailsEdit);
 /* DELETE Emails */
-router.delete('/users/:emailId(\\d+)', sessionController.adminRequired, userController.emailsDestroy);
+router.delete('/emails/:email', sessionController.adminRequired, userController.emailsDestroy);
 
 /*------- STATS ROUTES --------*/
 

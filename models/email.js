@@ -12,8 +12,7 @@ module.exports = (sequelize,DataTypes) => {
             username: {
                 type: DataTypes.STRING,
                 unique: true,
-                defaultValue: '',
-                validate: {notEmpty: {msg: "Username must not be empty."}}
+                defaultValue: ''
             },
             used: {
                 type: DataTypes.BOOLEAN,

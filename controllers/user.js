@@ -270,7 +270,28 @@ exports.emailsIndex = (req, res, next) => {
 
 // POST /emails
 exports.emailsAdd = (req, res, next) => {
-    
+    let new_email = req.body.newemail;
+
+    models.email.findOne({where: {email: new_email}})
+    .then(email => {
+        if(email){
+            req.flash('error','Email is already invited');
+            res.redirect('/emails');
+        }else{
+            let email = models.email.build({
+                email: new_email,
+                used: false
+            });
+
+            email.save({fields: ["email", "used"]})
+            .then(() => {
+                req.flash('success', 'Email invited successfully.');
+                res.redirect('/emails');
+            });
+        }
+        
+    })
+    .catch(error => next(error));
 };
 
 // PUT /emails
@@ -278,7 +299,22 @@ exports.emailsEdit = (req, res, next) => {
     
 };
 
-// DELETE /emails
+// DELETE /emails/:emailId
 exports.emailsDestroy = (req, res, next) => {
-    
+    let email = req.params.email;
+
+    models.email.findByPk(email)
+    .then(email => {
+        if(email){
+            email.destroy()
+            .then(() => {
+                req.flash('success', 'Email deleted successfully.');
+                res.redirect('/emails');
+            });
+        }else{
+            req.flash('error','Email does not exist');
+            res.redirect('/emails');
+        }
+    })
+    .catch(error => next(error));
 };
