@@ -3,7 +3,7 @@ exports.loginRequired = (req, res, next) => {
     if (req.session.user) {
         next();
     } else {
-        req.flash('error','Login Required');
+        req.flash('error','Ruta no permitida: por favor inicia sesión');
         res.redirect('/login');
     }
 };
@@ -12,19 +12,35 @@ exports.loginRequired = (req, res, next) => {
 // MW that allows to pass only if the logged useer in is admin.
 exports.adminRequired = (req, res, next) => {
     if (!req.session.user) {
-        req.flash('error','Login Required');
+        req.flash('error','Ruta no permitida: por favor inicia sesión');
         res.redirect('/login');
     } else {
         const isAdmin = !!req.session.user.isAdmin;
         if (isAdmin) {
             next();
         } else {
-            console.log('Prohibited route: the logged in user is not an administrator.');
+            console.log('Prohibited route: the logged in user is not an admin.');
             res.send(403);
         }
     }
 };
 
+// MW that allows to pass only if the logged useer in is admin.
+exports.adminOrEditorRequired = (req, res, next) => {
+    if (!req.session.user) {
+        req.flash('error','Ruta no permitida: por favor inicia sesión');
+        res.redirect('/login');
+    } else {
+        const isAdmin = !!req.session.user.isAdmin;
+        const isEditor = !!req.session.user.isEditor;
+        if (isAdmin || isEditor) {
+            next();
+        } else {
+            console.log('Prohibited route: the logged in user is not an admin or an editor.');
+            res.send(403);
+        }
+    }
+};
 
 // MW that allows to pass only if the logged in user is:
 // - the user to manage.

@@ -1,26 +1,56 @@
-<form method="post" action="/users/<%= user.id %>?_method=PUT">
+<form method="post" action="/users/<%=user.id%>?_method=PUT">
     <div class="columns">
         <div class="column">
             <p class="title is-1">Editar usuario</p>
         </div>
-        <div class="column is-narrow">
-            <span class="tag is-info is-medium">ADMIN</span>
-            <div class="select">
-                <select>
-                    <option value="true">Sí</option>
-                    <option value="false">No</option>
-                </select>
-            </div>
-        </div>
-        <div class="column is-narrow">
-            <span class="tag is-warning is-medium">EDITOR</span>
-            <div class="select">
-                <select>
-                    <option value="true">Sí</option>
-                    <option value="false">No</option>
-                </select>
-            </div>
-        </div>
+        <% if (session.user) { %>            
+            
+            <% if (session.user.isAdmin) { %>
+                <div class="column is-narrow">
+                    <span class="tag is-info is-medium">ROL</span>
+                    <div class="select">
+                        <select name="rol">
+                            <% if (user.isEditor){ %>
+                                <option value="user">Usuario</option>
+                                <option value="editor" selected>Editor</option>
+                            <% } else { %>
+                                <option value="user" selected>Usuario</option>
+                                <option value="editor">Editor</option>
+                            <% } %>
+                            <% if (user.isAdmin){ %>
+                                <option value="admin" selected>Admin</option>
+                            <% } else { %>
+                                <option value="admin">Admin</option>
+                            <% } %>
+                            
+                        </select>
+                    </div>
+                </div>
+            <%  } else if (session.user.isEditor) { %>
+                <div class="column is-narrow">
+                    <span class="tag is-info is-medium">ROL</span>
+                    <div class="select">
+                        <select name="rol">
+                            <% if (user.isEditor){ %>
+                                <option value="user">Usuario</option>
+                                <option value="editor" selected>Editor</option>
+                            <% } else { %>
+                                <option value="user" selected>Usuario</option>
+                                <option value="editor">Editor</option>
+                            <% } %>
+                            <% if (user.isAdmin){ %>
+                                <option value="admin" selected disabled>Admin</option>
+                            <% } else { %>
+                                <option value="admin" disabled>Admin</option>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+            <%  } else { %>
+
+            <%  } %>
+                
+        <% } %>
         <div class="column is-narrow">
             <input type="submit" class="button is-warning is-large" value="Editar usuario">
         </div>
@@ -29,15 +59,15 @@
     <div class="columns">
         <div class="column">
             <span class="tag is-dark is-medium">Usuario:</span>
-            <input type="text" class="input" name="username" autocomplete="off">
+            <input type="text" class="input" name="username" value="<%=user.username%>" autocomplete="off">
         </div>
         <div class="column">
             <span class="tag is-dark is-medium">Contraseña:</span>
-            <input type="password" class="input" name="password" autocomplete="off">
+            <input type="password" class="input" name="password" value="" autocomplete="off">
         </div>
         <div class="column">
             <span class="tag is-dark is-medium">Repetir Contraseña:</span>
-            <input type="password" class="input" name="password2" autocomplete="off">
+            <input type="password" class="input" name="password2" value="" autocomplete="off">
         </div>
     </div>
 

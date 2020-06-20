@@ -76,6 +76,9 @@ exports.newUser = (req,res,next) => {
                 if(user){
                     req.flash('error','User already exists');
                     res.redirect('/signup');
+                }else if(password.length < 5){
+                    req.flash('error','Password minimum number of characters is 5');
+                    res.redirect('/signup');
                 }else{
                     if(password===password2){
                         let user = models.User.build({
@@ -100,6 +103,7 @@ exports.newUser = (req,res,next) => {
                             error.errors.forEach(({message}) => req.flash('error', message));
                             res.redirect('/signup');
                         });
+
                     }else{
                         req.flash('error','Passwords do not match');
                         res.redirect('/signup');
@@ -160,27 +164,49 @@ exports.edit = (req, res, next) => {
 exports.update = (req, res, next) => {
     let {user} = req;
     let fields_to_update = [];
+    const rol = req.body.rol;
     const username = req.body.username;
     const password = req.body.password;
     const password2 = req.body.password2;
 
+    console.log(req.body);
+    if((rol==='admin') && (!!req.session.user.isAdmin)){
+        user.isAdmin = true;
+        user.isEditor = true;
+        fields_to_update.push('isAdmin');
+        fields_to_update.push('isEditor');
+    }else if((rol==='editor') && ((!user.isAdmin) || (!!req.session.user.isAdmin)) && (!!req.session.user.isEditor)){
+        user.isAdmin = false;
+        user.isEditor = true;
+        fields_to_update.push('isAdmin');
+        fields_to_update.push('isEditor');
+    }else if((rol==='user') && ((!user.isAdmin) || (!!req.session.user.isAdmin)) && ((!user.isEditor) || (!!req.session.user.isEditor))){
+        user.isAdmin = false;
+        user.isEditor = false;
+        fields_to_update.push('isAdmin');
+        fields_to_update.push('isEditor');
+    }
 
     if(username){
         user.username = username;
         fields_to_update.push('username');
     }
 
-    if (password) {
-        if(password===password2){
+    if(password) {
+        if(password.length < 5){
+            req.flash('error','Password minimum number of characters is 5');
+            return res.redirect('/signup');
+        }else if(password===password2){
             console.log('Updating password');
             user.password = password;
             fields_to_update.push('salt');
             fields_to_update.push('password');
         }else{
             req.flash('error','Passwords do not match');
-            res.redirect('/goback');
+            return res.redirect('/goback');
         }
     }
+
 
     user.save({fields: fields_to_update})
     .then(user => {
