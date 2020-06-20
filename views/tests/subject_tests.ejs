@@ -5,7 +5,8 @@
       <p class="title is-1">Tests de <%=subject%></p>
     </div>
     <% var isAdmin = session.user && session.user.isAdmin; %>
-    <% if(isAdmin){%>
+    <% var isEditor = session.user && session.user.isEditor; %>
+    <% if (isAdmin || isEditor) { %>
     <div class="column is-narrow">
       <a href="/newtest/<%=subject%>" class="button is-success is-large">Añadir test</a>
     </div>
@@ -26,7 +27,7 @@
               <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-primary is-medium">Solución</a>
             </div>
 
-            <% if(isAdmin){%>
+            <% if (isAdmin || isEditor) { %>
             <div class="column is-narrow">
               <a href="/edittest/<%=subject%>/<%=testid%>" class="button is-warning is-medium">Editar</a>
             </div>

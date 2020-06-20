@@ -4,10 +4,15 @@
     <div class="column">
       <p class="title is-1"><%= title || 'Todas las Preguntas' %></p>
     </div>
+
+    <% var isAdmin = session.user && session.user.isAdmin; %>
+    <% var isEditor = session.user && session.user.isEditor; %>
+    <% if(isAdmin || isEditor) { %>
     <div class="column is-narrow">
       <a href="/quizzes/new" class="button is-success">Nueva Pregunta</a>
     </div>
-    
+    <% } %>
+
     <div class="column is-one-third">
         <form method="get" action="<%= url %>">
           <input type="text" class="input is-info" name="search" value="<%= locals.search || '' %>" placeholder="Buscar preguntas" autocomplete="off" />
@@ -18,8 +23,7 @@
 
     <% for (var i in quizzes) { %>
     <% var quiz = quizzes[i]; %>
-    <% var isAdmin = session.user && session.user.isAdmin; %>
-
+    
       <div class="box">
           <div class="columns">
               <div class="column">
@@ -29,7 +33,7 @@
               <div class="column is-narrow">
                 <a href="/quizzes/<%=quiz.id%>" class="button is-primary">Solución</a>
               </div>
-              <% if(isAdmin){%>
+              <% if(isAdmin || isEditor) { %>
               <div class="column is-narrow">
                 <a href="/quizzes/<%=quiz.id%>/edit" class="button is-warning">Editar</a>
               </div>
