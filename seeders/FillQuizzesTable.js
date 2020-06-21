@@ -3,16 +3,11 @@
 module.exports = {
     up(queryInterface, Sequelize) {
 
-    return queryInterface.bulkInsert('quizzes', [
+    return queryInterface.bulkInsert('Quizzes', [
         //TEST RDPR NOVIEMBRE 2018
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'Una antena genera una densidad de potencia	de -30 dB(mW/m2) en	la dirección de	máxima radiación a una distancia de 1km. El	campo	eléctrico	generado a dicha distancia cuando se radia por un	lóbulo secundario	de -20 dB	con	respecto al	principal	es:',
             answer: 4,
             answer1: '5,7 dB(V/m)',
@@ -25,11 +20,6 @@ module.exports = {
         {   
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'El	rendimiento	de	radiación	de	una	antena, cuyo	diagrama	de	radiación	se	ha	medido a	una	distancia	mayor	a	2D²/λ, se	puede	obtener	a	partir	de:',
             answer: 2,
             answer1: 'El área	total	de	la	antena	y	las	pérdidas	de	espacio	libre',
@@ -42,11 +32,6 @@ module.exports = {
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'En	condiciones	de	campo	lejano,	siendo la	distancia	de	medida r:',
             answer: 3,
             answer1: 'No	se	pueden	medir	los	nulos	del	diagrama	de	radiación	y	el	error	de	fase	cometido	es	despreciable',
@@ -59,11 +44,6 @@ module.exports = {
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'La	fórmula de	Friis:',
             answer: 4,
             answer1: 'Relaciona	exclusivamente	las	pérdidas	de	espacio	libre	con	la	polarización	con	la	que	trabajan	las	antenas	de	un	enlace',
@@ -76,11 +56,6 @@ module.exports = {
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'Una	antena	omnidireccional:',
             answer: 3,
             answer1: 'Tiene	siempre	una	pureza	de	polarización	circular	igual	a	1	dB',
@@ -93,11 +68,6 @@ module.exports = {
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'En	 el	 vacío,	 una	 antena	 radia	 un	 campo	 eléctrico	 de	 4.5	 dB(V/m),	 que	 equivale	 a	 una	densidad	de	potencia	de:',
             answer: 3,
             answer1: '9,7 mW/m2,',
@@ -110,11 +80,6 @@ module.exports = {
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'Cuál	de las	siguientes	afirmaciones	es	cierta:',
             answer: 4,
             answer1: 'La	 directividad se	 puede	 medir	 a	 partir	 del	 ancho	 de	 haz	 a	-2,25	 dB	 en	 los	 planos	principales	sin	importar	el	tipo	de	antena',
@@ -127,11 +92,6 @@ module.exports = {
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'Diga	cuál	de	las	siguientes	afirmaciones	es	cierta,	si	se	tiene	un	campo	eléctrico	radiado	por	una	antena	en	campo	lejano	igual	a \\(\\vec{E}_{(\\vec{r},t)} = \\frac{E_0}{r} \\cdot e^{-jk_0r} \\cdot e^{jw_0t} \\cdot (a\\hat{\\varphi} + jb\\hat{\\theta}) \\):',
             answer: 2,
             answer1: 'El	campo	eléctrico	estará linealmente polarizado	si	b<a',
@@ -144,11 +104,6 @@ module.exports = {
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'Se	reciben	dos	señales	de	la	misma	densidad	de	potencia,	una	procedente	de	una	antena	con	 polarización	 vertical	 pura	 (señal	 deseada)	 y	 otra	 procedente	 de	 una	 antena	 con	polarización	horizontal',
             answer: 3,
             answer1: 'La	relación	señal a interferencia	será	de 15	dB',
@@ -161,11 +116,6 @@ module.exports = {
         {
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            course: 3,
-            semester: 1,
-            year: 2018, 
-            month: 11,
-            desc: '1er Parcial',
             question: 'Cuál de los siguientes	campos tiene polarización lineal',
             answer: 3,
             answer1: '\\(\\vec{E}_{(\\vec{r},t)} = \\frac{E_0}{r} \\cdot e^{-jk_0r} \\cdot e^{jw_0t} \\cdot (a\\hat{\\varphi} + jb\\hat{\\theta}) \\)',
@@ -175,10 +125,10 @@ module.exports = {
             createdAt: new Date(),
             updatedAt: new Date()
         }
-        ]);
+    ]);
     },
 
     down(queryInterface, Sequelize) {
-        return queryInterface.bulkDelete('quizzes', null, {});
+        return queryInterface.bulkDelete('Quizzes', null, {});
     }
 };

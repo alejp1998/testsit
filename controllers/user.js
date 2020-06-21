@@ -4,9 +4,12 @@ const {models} = require("../models");
 const { encryptPassword } = require("../helpers/crypt");
 const paginate = require('../helpers/paginate').paginate;
 
+const {User,Email} = models;
+
+
 // Autoload the user with id equals to :userId
 exports.load = (req, res, next, userId) => {
-    models.User.findByPk(userId)
+    User.findByPk(userId)
         .then(user => {
             if (user) {
                 req.user = user;
@@ -26,7 +29,7 @@ exports.index = (req, res, next) => {
         include: []
     };
 
-    models.User.count()
+    User.count()
     .then(count => {
         //Pagination
         const page_items = 5;
@@ -42,7 +45,7 @@ exports.index = (req, res, next) => {
             limit: page_items
         };
 
-        return models.User.findAll(findOptions);
+        return User.findAll(findOptions);
     })
     .then(users => {
         res.render('users/index', {users});
@@ -65,13 +68,13 @@ exports.newUser = (req,res,next) => {
     const password = req.body.password;
     const password2 = req.body.password2;
 
-    models.email.findOne({where: {email: sign_email}})
+    Email.findOne({where: {email: sign_email}})
     .then(email => {
         if(!email){
             req.flash('error','Email is not invited');
             res.redirect('/signup');
         }else if(!email.used){
-            models.User.findOne({where: {username: username}})
+            User.findOne({where: {username: username}})
             .then(user => {
                 if(user){
                     req.flash('error','User already exists');
@@ -81,7 +84,7 @@ exports.newUser = (req,res,next) => {
                     res.redirect('/signup');
                 }else{
                     if(password===password2){
-                        let user = models.User.build({
+                        let user = User.build({
                             username,
                             email: sign_email,
                             password
@@ -130,7 +133,7 @@ exports.logIn = (req,res,next) => {
     }
     const username = req.body.username;
     const password = req.body.password;
-    models.User.findOne({where: {username: username}})
+    User.findOne({where: {username: username}})
     .then(user => {
         if(!user){
             req.flash('error','Nombre de usuario incorrecto');
@@ -210,7 +213,7 @@ exports.update = (req, res, next) => {
 
     user.save({fields: fields_to_update})
     .then(user => {
-        models.email.findOne({where: {email: user.email}})
+        Email.findOne({where: {email: user.email}})
         .then(email => {
             email.save({fields: fields_to_update})
             .then(() => {
@@ -243,7 +246,7 @@ exports.logOut = (req,res,next) => {
 exports.destroy = (req, res, next) => {
     const {user} = req;
 
-    models.email.findOne({where: {email: user.email}})
+    Email.findOne({where: {email: user.email}})
     .then(email => {
         email.used = false;
         email.username = '';
@@ -259,88 +262,6 @@ exports.destroy = (req, res, next) => {
                 res.redirect('/goback');
             })
         });
-    })
-    .catch(error => next(error));
-};
-
-
-// GET /emails
-exports.emailsIndex = (req, res, next) => {
-    let countOptions = {
-        where: {},
-        include: []
-    };
-
-    models.email.count()
-    .then(count => {
-        //Pagination
-        const page_items = 5;
-        //The page shown is in the query
-        const pageno = Number(req.query.pageno) || 1;
-        //Create String with HTML to render pagination buttons
-        res.locals.paginate_control = paginate(count, page_items, pageno, req.url);
-
-        const findOptions = {
-            ...countOptions,
-            offset: page_items*(pageno-1),
-            limit: page_items
-        };
-
-        return models.email.findAll(findOptions);
-    })
-    .then(emails => {
-        res.render('emails/index', {emails});
-    })
-    .catch(error => next(error));
-};
-
-// POST /emails
-exports.emailsAdd = (req, res, next) => {
-    let new_email = req.body.newemail;
-
-    models.email.findOne({where: {email: new_email}})
-    .then(email => {
-        if(email){
-            req.flash('error','Email is already invited');
-            res.redirect('/emails');
-        }else{
-            let email = models.email.build({
-                email: new_email,
-                used: false
-            });
-
-            email.save({fields: ["email", "used"]})
-            .then(() => {
-                req.flash('success', 'Email invited successfully.');
-                res.redirect('/emails');
-            });
-        }
-        
-    })
-    .catch(error => next(error));
-};
-
-// PUT /emails
-exports.emailsEdit = (req, res, next) => {
-    
-};
-
-// DELETE /emails/:emailId
-exports.emailsDestroy = (req, res, next) => {
-    let email = req.params.email;
-
-    models.email.findByPk(email)
-    .then(email => {
-        if(email){
-            email.destroy()
-            .then(() => {
-                req.flash('success', 'Email deleted successfully.');
-                res.redirect('/emails');
-            });
-        }else{
-            req.flash('error','Email does not exist');
-            res.redirect('/emails');
-        }
     })
     .catch(error => next(error));
 };

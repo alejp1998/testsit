@@ -3,7 +3,7 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     
-    return queryInterface.bulkInsert('emails',[
+    return queryInterface.bulkInsert('Emails',[
         {
           email: 'admin@alumnos.upm.es',
           username: 'admin',
@@ -19,6 +19,20 @@ module.exports = {
           updatedAt: new Date()
         },
         {
+          email: 'rocio@alumnos.upm.es',
+          username: 'rocio',
+          used: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          email: 'mamado@alumnos.upm.es',
+          username: 'mamado',
+          used: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
           email: 'trial@alumnos.upm.es',
           username: '',
           used: false,
@@ -29,6 +43,6 @@ module.exports = {
   },
 
   down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('emails', null, {});
+    return queryInterface.bulkDelete('Emails', null, {});
   }
 };

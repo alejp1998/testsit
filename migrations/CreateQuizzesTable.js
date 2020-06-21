@@ -3,7 +3,7 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable(
-        'quizzes',
+        'Quizzes',
         {
           id: {
             type: Sequelize.INTEGER,
@@ -16,17 +16,9 @@ module.exports = {
               type: Sequelize.STRING,
               validate: {notEmpty: {msg: "Subject must not be empty"}}
           },
-          course: Sequelize.INTEGER,
-          semester: Sequelize.INTEGER,
-          year: Sequelize.INTEGER,
-          month: Sequelize.INTEGER,
           subject: {
               type: Sequelize.STRING,
               validate: {notEmpty: {msg: "Subject must not be empty"}}
-          },
-          desc: {
-              type: Sequelize.STRING,
-              validate: {notEmpty: {msg: "Description must not be empty"}}
           },
           question: {
             type: Sequelize.TEXT,
@@ -58,6 +50,6 @@ module.exports = {
     );
   },
   down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('quizzes');
+    return queryInterface.dropTable('Quizzes');
   }
 };

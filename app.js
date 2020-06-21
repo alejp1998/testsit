@@ -46,7 +46,7 @@ var sessionStore = new SequelizeStore({
   expiration: 4 * 60 * 60 * 1000  // The maximum age (in milliseconds) of a valid session. (4 hours)
 });
 app.use(session({
-  secret: "Quiz 2019",
+  secret: "Testsit",
   store: sessionStore,
   resave: false,
   saveUninitialized: true

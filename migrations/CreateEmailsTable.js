@@ -3,7 +3,7 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable(
-        'emails',
+        'Emails',
         {
             email: {
                 type: Sequelize.STRING,
@@ -34,6 +34,6 @@ module.exports = {
     );
   },
   down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('emails');
+    return queryInterface.dropTable('Emails');
   }
 };

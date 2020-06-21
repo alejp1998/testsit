@@ -1,7 +1,7 @@
 // Definition of the email model:
 module.exports = (sequelize,DataTypes) => {
     return sequelize.define(
-        'email',
+        'Email',
         {
             email: {
                 type: DataTypes.STRING,

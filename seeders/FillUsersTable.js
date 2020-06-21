@@ -5,7 +5,7 @@ var crypt = require('../helpers/crypt');
 module.exports = {
   up(queryInterface, Sequelize) {
 
-    return queryInterface.bulkInsert('users', [
+    return queryInterface.bulkInsert('Users', [
       {
         username: 'admin',
         email: 'admin@alumnos.upm.es',
@@ -23,11 +23,30 @@ module.exports = {
         isAdmin: true,
         isEditor: true,
         createdAt: new Date(), updatedAt: new Date()
+      },
+      {
+        username: 'rocio',
+        email: 'rocio@alumnos.upm.es',
+        password: crypt.encryptPassword('rocio1234','cccc'),
+        salt: 'cccc',
+        isAdmin: false,
+        isEditor: true,
+        createdAt: new Date(), updatedAt: new Date()
+      },
+      {
+        username: 'mamado',
+        email: 'mamado@alumnos.upm.es',
+        password: crypt.encryptPassword('mamado1234','dddd'),
+        salt: 'cccc',
+        isAdmin: false,
+        isEditor: false,
+        createdAt: new Date(), updatedAt: new Date()
       }
+
     ]);
   },
 
   down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('users', null, {});
+    return queryInterface.bulkDelete('Users', null, {});
   }
 };
