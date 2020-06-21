@@ -43,12 +43,42 @@ exports.playTest = (req, res, next) => {
   });
 };
 
+//PUT /tests/:subject/:testid
+//Se encarga de comprobar que las preguntas del tests son correctas, incorrectas, o no contestadas;
+//a partir del array del test guardado como dato de la sesion, debe dar paso a una vista donde se muestren
+//las preguntas en rojo si hemos fallado y en verde si acertamos, la puntuación total etc
+exports.checkTest = (req, res, next) => {
+  const test = req.session.test;
+  const subject = req.params.subject;
+  let correct = 0;
+  let incorrect = 0;
+  let nonanswered = 0;
+  
+  let answers = req.body;
+  let N = Object.keys(test.quizzes).length;
+
+  for (var i = 0; i < N; i++) {
+    if(answers['answer'+ i] === '0'){
+      test.quizzes[i].result = 'nonanswered';
+      nonanswered++;
+    }else if( Number(test.quizzes[i].answer) === Number(answers['answer'+ i]) ){
+      test.quizzes[i].result = 'correct';
+      correct++;
+    }else if( Number(test.quizzes[i].answer) !== Number(answers['answer'+ i]) ){
+      test.quizzes[i].result = 'incorrect';
+      incorrect++;
+    }
+  }
+
+  res.render('tests/result_test.ejs', {test,answers,subject,correct,incorrect,nonanswered} );
+};
+
 //GET /tests/:subject/:desc/solved
 //Carga el test con sus respuestas correctas
 exports.solvedTest = (req, res, next) => {
   const subject = req.params.subject;
   const testid = req.params.testid;
-  
+
   Test.findByPk(testid, 
     {include: ['quizzes']}
   ).then(test => {
@@ -60,38 +90,12 @@ exports.solvedTest = (req, res, next) => {
   });
 };
 
+
 //GET /newtest/:subject/
 //Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
 exports.addTestForm = (req, res, next) => {
   const subject = req.params.subject;
 	res.render('tests/newtest.ejs', {subject} );
-};
-
-//GET /edittest/:subject/:testid
-//Devuelve el form para editar el test
-exports.editTestForm = (req, res, next) => {
-  const subject = req.params.subject;
-  const testid = req.params.testid;
-  let test = [];
-  let desc,year,month;
-  Quiz.findAll({
-    where: {subject: subject,
-            testid: testid}
-  })
-  .then(questions => {
-    test = questions;
-    desc = test[0].desc;
-    year = test[0].year;
-    month = test[0].month;
-    npreg = test.length;
-    
-    req.session.test = test;
-    res.render('tests/edittest.ejs', {subject,testid,desc,year,month,test,npreg} );
-  })
-  .catch(error => {
-    req.flash('error', 'Error showing subject tests: ' + error.message);
-    next(error);
-  });
 };
 
 
@@ -107,6 +111,27 @@ exports.addTestQuestions = (req, res, next) => {
   const noptions = req.body.noptions;
 	res.render('tests/addtest.ejs', {subject,testid,year,month,desc,npreg,noptions} );
 };
+
+
+//GET /edittest/:subject/:testid
+//Devuelve el form para editar el test
+exports.editTestForm = (req, res, next) => {
+  const subject = req.params.subject;
+  const testid = req.params.testid;
+
+  Test.findByPk(testid, 
+    {include: ['quizzes']}
+  ).then(test => {
+    let npreg = Object.keys(test.quizzes).length;
+    
+    res.render('tests/edittest.ejs', {subject,test,npreg} );
+  })
+  .catch(error => {
+    req.flash('error', 'Error showing subject tests: ' + error.message);
+    next(error);
+  });
+};
+
 
 //POST /edittest/:subject/:testid
 exports.editTest = (req, res, next) => {
@@ -247,41 +272,6 @@ exports.addTest = (req, res, next) => {
     req.flash('error', 'Error adding the Quiz: ' + error.message);
     next(error);
   });
-};
-
-//PUT /tests/:subject/:testid
-//Se encarga de comprobar que las preguntas del tests son correctas, incorrectas, o no contestadas;
-//a partir del array del test guardado como dato de la sesion, debe dar paso a una vista donde se muestren
-//las preguntas en rojo si hemos fallado y en verde si acertamos, la puntuación total etc
-exports.checkTest = (req, res, next) => {
-  const test = req.session.test;
-  const subject = req.params.subject;
-  let desc;
-  let testid;
-  let correct = 0;
-  let incorrect = 0;
-  let nonanswered = 0;
-
-  testid = test[0].testid;
-  desc = test[0].desc;
-  
-  let answers = req.body;
-  N = Object.keys(answers).length;
-
-  for (var i = 0; i < N; i++) {
-    if(answers['answer'+ i] === '0'){
-      test[i].result = 'nonanswered';
-      nonanswered++;
-    }else if( Number(test[i].answer) === Number(answers['answer'+ i]) ){
-      test[i].result = 'correct';
-      correct++;
-    }else if( Number(test[i].answer) !== Number(answers['answer'+ i]) ){
-      test[i].result = 'incorrect';
-      incorrect++;
-    }
-  }
-
-  res.render('tests/result_test.ejs', {test,answers,subject,testid,desc,correct,incorrect,nonanswered} );
 };
 
 //DEL /tests/:subject/:testid

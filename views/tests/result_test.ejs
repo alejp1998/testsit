@@ -1,43 +1,68 @@
 <div class="content">
 
   <div class="box">
-      <div class="columns">
-          <div class="column">
-            <p class="subtitle is-2">Test Id: <%=testid%></p>
-          </div>
-          <div class="column is-narrow">
-            <a href="/tests/<%=subject%>"><%=subject%></a>
-          </div>
+    <div class="columns">
+      <div class="column">
+        <p class="title is-2">Test Id: <%=test.testid%></p>
+        <p class="subtitle is-4">Descripción: <%=test.desc%></p>
       </div>
-      <div class="columns">
-          <div class="column">
-            <p class="subtitle is-4">Descripción: <%=desc%></p>
-          </div>
-          <div class="column is-narrow">
-            <span class="tag has-text-white has-background-info is-large">RESULTADO</span>
-          </div>
+      <div class="column is-narrow">
+        <canvas id="chart-<%=test.testid%>" width="75" height="75"></canvas>
       </div>
-      <br>
-      <div class="columns">
-        <div class="column has-background-success is-one-third">
-          <p class="subtitle is-4">Correctas: <b><%=correct%></b> </p>
-        </div>
-        <div class="column has-background-danger is-one-third">
-          <p class="subtitle is-4">Incorrectas: <b><%=incorrect%></b> </p>
-        </div>
-        <div class="column has-background-light is-one-third">
-          <p class="subtitle is-4">No respondidas: <b><%=nonanswered%></b> </p>
-        </div>
+      <div class="column is-narrow">
+        <a href="/tests/<%=subject%>"><%=subject%></a>
       </div>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <p class="subtitle is-6">Veces intentado: <%=test.nTries%></p>
+      </div>
+      <div class="column is-narrow">
+        <span class="tag has-text-white has-background-info is-large">RESULTADO</span>
+      </div>
+    </div>
+    <br>
+    <div class="columns">
+      <div class="column has-background-success is-one-third">
+        <p class="subtitle is-4">Correctas: <b><%=correct%></b> </p>
+      </div>
+      <div class="column has-background-danger is-one-third">
+        <p class="subtitle is-4">Incorrectas: <b><%=incorrect%></b> </p>
+      </div>
+      <div class="column has-background-light is-one-third">
+        <p class="subtitle is-4">No respondidas: <b><%=nonanswered%></b> </p>
+      </div>
+    </div>
   </div>
 
+  <script>
+      var ctx = document.getElementById('chart-<%=test.testid%>').getContext('2d');
+      var myChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+              labels: ['Aciertos', 'Fallos', 'No contestadas'],
+              datasets: [{
+                  data: [<%=test.hits%>, <%=test.fails%>, <%=test.omissions%>],
+                  backgroundColor: [
+                      'hsl(141, 53%, 53%)',
+                      'hsl(348, 100%, 61%)',
+                      'hsl(0, 0%, 71%)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              legend: false,
+          }
+      });
+  </script>
     
 
   <div class="columns">
       <div class="column">
 
-            <% for (var i in test) { %>
-                <% var quiz = test[i]; %>
+            <% for (var i in test.quizzes) { %>
+                <% var quiz = test.quizzes[i]; %>
                 <% var n = Number(i) + 1; %>
 
                       <div class="box">
@@ -48,107 +73,159 @@
                         <% }else{ %>
                           <h3 class="subtitle is-4"><span class="tag has-background-light is-medium"><%=n%></span>  <%=quiz.question%></h3>
                         <% } %>
-                            <ul>
-                              <% if(quiz.answer1){ %>
-                                <% if(Number(quiz.answer) === 1){ %>
-                                  <li>
-                                    <p class="subtitle is-4"><b class="has-text-success">A.  </b><%=quiz.answer1%></p>
-                                  </li>
-                                <% }else if(answers['answer'+i] === '1'){ %>
-                                  <li>
-                                    <p class="subtitle is-5"><b class="has-text-danger">A.  </b><%=quiz.answer1%></p>
-                                  </li>
-                                <% }else{ %>
-                                  <li>
-                                    <p class="subtitle is-5">A.  <%=quiz.answer1%></p>
-                                  </li>
-                                <% } %>
-                              <% } %>
-                              <% if(quiz.answer2){ %>
-                                <% if(Number(quiz.answer) === 2){ %>
-                                  <li>
-                                    <p class="subtitle is-4"><b class="has-text-success">B.  </b><%=quiz.answer2%></p>
-                                  </li>
-                                <% }else if(answers['answer'+i] === '2'){ %>
-                                  <li>
-                                    <p class="subtitle is-5"><b class="has-text-danger">B.  </b><%=quiz.answer2%></p>
-                                  </li>
-                                <% }else{ %>
-                                  <li>
-                                    <p class="subtitle is-5">B.  <%=quiz.answer2%></p>
-                                  </li>
-                                <% } %>
-                              <% } %>
-                              <% if(quiz.answer3){ %>
-                                <% if(Number(quiz.answer) === 3){ %>
-                                  <li>
-                                    <p class="subtitle is-4"><b class="has-text-success">C.  </b><%=quiz.answer3%></p>
-                                  </li>
-                                <% }else if(answers['answer'+i] === '3'){ %>
-                                  <li>
-                                    <p class="subtitle is-5"><b class="has-text-danger">C.  </b><%=quiz.answer3%></p>
-                                  </li>
-                                <% }else{ %>
-                                  <li>
-                                    <p class="subtitle is-5">C.  <%=quiz.answer3%></p>
-                                  </li>
-                                <% } %>
-                              <% } %>
-                              <% if(quiz.answer4){ %>
-                                <% if(Number(quiz.answer) === 4){ %>
-                                  <li>
-                                    <p class="subtitle is-4"><b class="has-text-success">D.  </b><%=quiz.answer4%></p>
-                                  </li>
-                                <% }else if(answers['answer'+i] === '4'){ %>
-                                  <li>
-                                    <p class="subtitle is-5"><b class="has-text-danger">D.  </b><%=quiz.answer4%></p>
-                                  </li>
-                                <% }else{ %>
-                                  <li>
-                                    <p class="subtitle is-5">D.  <%=quiz.answer4%></p>
-                                  </li>
-                                <% } %>
-                              <% } %>
-                              <% if(quiz.answer5){ %>
-                                <% if(Number(quiz.answer) === 5){ %>
-                                  <li>
-                                    <p class="subtitle is-4"><b class="has-text-success">E.  <%=quiz.answer5%></b></p>
-                                  </li>
-                                <% }else if(answers['answer'+i] === '5'){ %>
-                                  <li>
-                                    <p class="subtitle is-5"><b class="has-text-danger">E.  </b><%=quiz.answer5%></p>
-                                  </li>
-                                <% }else{ %>
-                                  <li>
-                                    <p class="subtitle is-5">E.  <%=quiz.answer5%></p>
-                                  </li>
-                                <% } %>
-                              <% } %>
-                              <% if(quiz.answer6){ %>
-                                <% if(Number(quiz.answer) === 6){ %>
-                                  <li>
-                                    <p class="subtitle is-4"><b class="has-text-success">F.  <%=quiz.answer6%></b></p>
-                                  </li>
-                                <% }else if(answers['answer'+i] === '6'){ %>
-                                  <li>
-                                    <p class="subtitle is-5"><b class="has-text-danger">F.  </b><%=quiz.answer6%></p>
-                                  </li>
-                                <% }else{ %>
-                                  <li>
-                                    <p class="subtitle is-5">F.  <%=quiz.answer6%></p>
-                                  </li>
-                                <% } %>
-                              <% } %>
-                          </ul>
+                          <div class="columns">
+                            <div class="column">
+                              <ul>
+                                  <% if(quiz.answer1){ %>
+                                    <% if(Number(quiz.answer) === 1){ %>
+                                      <li>
+                                        <p class="subtitle is-4"><b class="has-text-success">A.  </b><%=quiz.answer1%></p>
+                                      </li>
+                                    <% }else if(answers['answer'+i] === '1'){ %>
+                                      <li>
+                                        <p class="subtitle is-5"><b class="has-text-danger">A.  </b><%=quiz.answer1%></p>
+                                      </li>
+                                    <% }else{ %>
+                                      <li>
+                                        <p class="subtitle is-5">A.  <%=quiz.answer1%></p>
+                                      </li>
+                                    <% } %>
+                                  <% } %>
+                                  <% if(quiz.answer2){ %>
+                                    <% if(Number(quiz.answer) === 2){ %>
+                                      <li>
+                                        <p class="subtitle is-4"><b class="has-text-success">B.  </b><%=quiz.answer2%></p>
+                                      </li>
+                                    <% }else if(answers['answer'+i] === '2'){ %>
+                                      <li>
+                                        <p class="subtitle is-5"><b class="has-text-danger">B.  </b><%=quiz.answer2%></p>
+                                      </li>
+                                    <% }else{ %>
+                                      <li>
+                                        <p class="subtitle is-5">B.  <%=quiz.answer2%></p>
+                                      </li>
+                                    <% } %>
+                                  <% } %>
+                                  <% if(quiz.answer3){ %>
+                                    <% if(Number(quiz.answer) === 3){ %>
+                                      <li>
+                                        <p class="subtitle is-4"><b class="has-text-success">C.  </b><%=quiz.answer3%></p>
+                                      </li>
+                                    <% }else if(answers['answer'+i] === '3'){ %>
+                                      <li>
+                                        <p class="subtitle is-5"><b class="has-text-danger">C.  </b><%=quiz.answer3%></p>
+                                      </li>
+                                    <% }else{ %>
+                                      <li>
+                                        <p class="subtitle is-5">C.  <%=quiz.answer3%></p>
+                                      </li>
+                                    <% } %>
+                                  <% } %>
+                                  <% if(quiz.answer4){ %>
+                                    <% if(Number(quiz.answer) === 4){ %>
+                                      <li>
+                                        <p class="subtitle is-4"><b class="has-text-success">D.  </b><%=quiz.answer4%></p>
+                                      </li>
+                                    <% }else if(answers['answer'+i] === '4'){ %>
+                                      <li>
+                                        <p class="subtitle is-5"><b class="has-text-danger">D.  </b><%=quiz.answer4%></p>
+                                      </li>
+                                    <% }else{ %>
+                                      <li>
+                                        <p class="subtitle is-5">D.  <%=quiz.answer4%></p>
+                                      </li>
+                                    <% } %>
+                                  <% } %>
+                                  <% if(quiz.answer5){ %>
+                                    <% if(Number(quiz.answer) === 5){ %>
+                                      <li>
+                                        <p class="subtitle is-4"><b class="has-text-success">E.  <%=quiz.answer5%></b></p>
+                                      </li>
+                                    <% }else if(answers['answer'+i] === '5'){ %>
+                                      <li>
+                                        <p class="subtitle is-5"><b class="has-text-danger">E.  </b><%=quiz.answer5%></p>
+                                      </li>
+                                    <% }else{ %>
+                                      <li>
+                                        <p class="subtitle is-5">E.  <%=quiz.answer5%></p>
+                                      </li>
+                                    <% } %>
+                                  <% } %>
+                                  <% if(quiz.answer6){ %>
+                                    <% if(Number(quiz.answer) === 6){ %>
+                                      <li>
+                                        <p class="subtitle is-4"><b class="has-text-success">F.  <%=quiz.answer6%></b></p>
+                                      </li>
+                                    <% }else if(answers['answer'+i] === '6'){ %>
+                                      <li>
+                                        <p class="subtitle is-5"><b class="has-text-danger">F.  </b><%=quiz.answer6%></p>
+                                      </li>
+                                    <% }else{ %>
+                                      <li>
+                                        <p class="subtitle is-5">F.  <%=quiz.answer6%></p>
+                                      </li>
+                                    <% } %>
+                                  <% } %>
+                              </ul>
+                            </div>
+                            <div class="column is-narrow">
+                              <canvas id="chart1-<%=quiz.id%>" width="100" height="100"></canvas>
+                            </div>
+                            <div class="column is-narrow">
+                              <canvas id="chart2-<%=quiz.id%>" width="100" height="100"></canvas>
+                            </div>
+                          </div>
+                            
+                          <script>
+                              var ctx1 = document.getElementById('chart1-<%=quiz.id%>').getContext('2d');
+                              var myChart1 = new Chart(ctx1, {
+                                  type: 'doughnut',
+                                  data: {
+                                      labels: ['A', 'B', 'C', 'D', 'E', 'F'],
+                                      datasets: [{
+                                          data: [<%=quiz.n1%>, <%=quiz.n2%>, <%=quiz.n3%>,
+                                                <%=quiz.n4%>, <%=quiz.n5%>, <%=quiz.n6%>],
+                                          backgroundColor: [
+                                            '#1f77b4','#ff7f0e','#2ca02c',
+                                            '#d62728','#9467bd','#8c564b'
+                                          ]
+                                      }]
+                                  },
+                                  options: {
+                                      legend: false,
+                                  }
+                              });
+        
+                              var ctx2 = document.getElementById('chart2-<%=quiz.id%>').getContext('2d');
+                              var myChart2 = new Chart(ctx2, {
+                                  type: 'doughnut',
+                                  data: {
+                                      labels: ['Aciertos', 'Fallos', 'No contestadas'],
+                                      datasets: [{
+                                          data: [<%=quiz.hits%>, <%=quiz.fails%>, <%=quiz.omissions%>],
+                                          backgroundColor: [
+                                              'hsl(141, 53%, 53%)',
+                                              'hsl(348, 100%, 61%)',
+                                              'hsl(0, 0%, 71%)'
+                                          ],
+                                          borderWidth: 1
+                                      }]
+                                  },
+                                  options: {
+                                      legend: false,
+                                  }
+                              });
+                          </script>
+
                       </div>
 
           <% } %>
 
           <a href="/tests/<%=subject%>" class="button is-info">Volver</a>
 
-          <a href="/tests/<%=subject%>/<%=testid%>" class="button is-warning">Intentar de nuevo</a>
+          <a href="/tests/<%=subject%>/<%=test.testid%>" class="button is-warning">Intentar de nuevo</a>
 
-          <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-primary">Solución</a>
+          <a href="/tests/<%=subject%>/<%=test.testid%>/solved" class="button is-primary">Solución</a>
 
       </div>
   </div>

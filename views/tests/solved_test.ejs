@@ -54,7 +54,7 @@
 
                   <div class="box">
                       <h3 class="subtitle is-4"><span class="tag has-text-white has-background-info is-medium"><%=n%></span>  <%=quiz.question%></h3>
-                      <div class="colums">
+                      <div class="columns">
                         <div class="column">
                           <ul>
                               <% if(quiz.answer1){ %>
@@ -126,10 +126,54 @@
                           </ul>
                         </div>
                         <div class="column is-narrow">
-                          <canvas id="chart-<%=test.testid%>" width="75" height="75"></canvas>
+                          <canvas id="chart1-<%=quiz.id%>" width="100" height="100"></canvas>
+                        </div>
+                        <div class="column is-narrow">
+                          <canvas id="chart2-<%=quiz.id%>" width="100" height="100"></canvas>
                         </div>
                       </div>
                   </div>
+
+                  <script>
+                      var ctx1 = document.getElementById('chart1-<%=quiz.id%>').getContext('2d');
+                      var myChart1 = new Chart(ctx1, {
+                          type: 'doughnut',
+                          data: {
+                              labels: ['A', 'B', 'C', 'D', 'E', 'F'],
+                              datasets: [{
+                                  data: [<%=quiz.n1%>, <%=quiz.n2%>, <%=quiz.n3%>,
+                                        <%=quiz.n4%>, <%=quiz.n5%>, <%=quiz.n6%>],
+                                  backgroundColor: [
+                                    '#1f77b4','#ff7f0e','#2ca02c',
+                                    '#d62728','#9467bd','#8c564b'
+                                  ]
+                              }]
+                          },
+                          options: {
+                              legend: false,
+                          }
+                      });
+
+                      var ctx2 = document.getElementById('chart2-<%=quiz.id%>').getContext('2d');
+                      var myChart2 = new Chart(ctx2, {
+                          type: 'doughnut',
+                          data: {
+                              labels: ['Aciertos', 'Fallos', 'No contestadas'],
+                              datasets: [{
+                                  data: [<%=quiz.hits%>, <%=quiz.fails%>, <%=quiz.omissions%>],
+                                  backgroundColor: [
+                                      'hsl(141, 53%, 53%)',
+                                      'hsl(348, 100%, 61%)',
+                                      'hsl(0, 0%, 71%)'
+                                  ],
+                                  borderWidth: 1
+                              }]
+                          },
+                          options: {
+                              legend: false,
+                          }
+                      });
+                  </script>
 
             <% } %>
 
