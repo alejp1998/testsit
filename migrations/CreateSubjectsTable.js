@@ -31,6 +31,26 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 validate: {notEmpty: {msg: "Semester must not be empty"}}
             },
+            nTries: {
+              type: Sequelize.INTEGER,
+              allowNull: false,
+              defaultValue: '0'
+            },
+            hits: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            fails: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            omissions: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
             createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false

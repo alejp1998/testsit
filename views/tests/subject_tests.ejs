@@ -14,30 +14,62 @@
     
   </div>
 
-    <% for (var i in testids) { %>
-    <% var testid = testids[i]; %>
-    <% var desc = descs[i]; %>
+  <% for (var i in tests) { %>
+  <% var test = tests[i]; %>
 
-      <div class="box is-info">
-          <div class="columns">
-            <div class="column">
-              <a href="/tests/<%=subject%>/<%=testid%>" class="is-size-3"><%=testid%></a>
-            </div>
-            <div class="column is-narrow">
-              <a href="/tests/<%=subject%>/<%=testid%>/solved" class="button is-primary is-medium">Solución</a>
-            </div>
-
-            <% if (isAdmin || isEditor) { %>
-            <div class="column is-narrow">
-              <a href="/edittest/<%=subject%>/<%=testid%>" class="button is-warning is-medium">Editar</a>
-            </div>
-            <div class="column is-narrow">
-              <a href="/tests/<%=subject%>/<%=testid%>?_method=DELETE"" class="button is-danger is-medium" onclick="return confirm('Delete: <%=testid%>?');">Eliminar</a>
-            </div>
-            <% } %>
-            
+    <div class="box">
+        <div class="columns">
+          <div class="column">
+            <a href="/tests/<%=subject%>/<%=test.testid%>" class="is-size-3"><%=test.testid%></a>
           </div>
-          <p class="subtitle is-4"><%=desc%></p>
-      </div>
+          <div class="column is-narrow">
+            <a href="/tests/<%=subject%>/<%=test.testid%>/solved" class="button is-primary is-medium">Solución</a>
+          </div>
 
-    <% } %>
+          <% if (isAdmin || isEditor) { %>
+          <div class="column is-narrow">
+            <a href="/edittest/<%=subject%>/<%=test.testid%>" class="button is-warning is-medium">Editar</a>
+          </div>
+          <div class="column is-narrow">
+            <a href="/tests/<%=subject%>/<%=test.testid%>?_method=DELETE"" class="button is-danger is-medium" onclick="return confirm('Delete: <%=test.testid%>?');">Eliminar</a>
+          </div>
+          <% } %>
+          
+        </div>
+
+        <div class="columns">
+          <div class="column">
+              <p class="subtitle is-4"><%=test.desc%></p>
+              <p class="subtitle is-6">Veces intentado: <%=test.nTries%></p>
+          </div>
+          <div class="column is-narrow">
+              <canvas id="chart-<%=test.testid%>" width="75" height="75"></canvas>
+          </div>
+        </div>
+    </div>
+
+    <script>
+        var ctx = document.getElementById('chart-<%=test.testid%>').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Aciertos', 'Fallos', 'No contestadas'],
+                datasets: [{
+                    data: [<%=test.hits%>, <%=test.fails%>, <%=test.omissions%>],
+                    backgroundColor: [
+                        'hsl(141, 53%, 53%)',
+                        'hsl(348, 100%, 61%)',
+                        'hsl(0, 0%, 71%)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                legend: false,
+            }
+        });
+    </script>
+
+  <% } %>
+
+</div>

@@ -7,65 +7,17 @@ var ssn;
 
 const {Subject,Test,Quiz} = models;
 
-
-//GET /tests/primero
-exports.primero = (req, res, next) => {
-	res.render('tests/cursos/primero.ejs');
-};
-
-//GET /tests/segundo
-exports.segundo = (req, res, next) => {
-	res.render('tests/cursos/segundo.ejs');
-};
-
-//GET /tests/tercero
-exports.tercero = (req, res, next) => {
-	res.render('tests/cursos/tercero.ejs');
-};
-
-//GET /tests/cuarto
-exports.cuarto = (req, res, next) => {
-	res.render('tests/cursos/cuarto.ejs');
-};
-
-//GET /tests/sistemas
-exports.sistemas = (req, res, next) => {
-	res.render('tests/cursos/sistemas.ejs');
-};
-
-//GET /tests/electronica
-exports.electronica = (req, res, next) => {
-	res.render('tests/cursos/electronica.ejs');
-};
-
-//GET /tests/sonidoimagen
-exports.sonidoimagen = (req, res, next) => {
-	res.render('tests/cursos/sonidoimagen.ejs');
-};
-
-//GET /tests/telematica
-exports.telematica = (req, res, next) => {
-	res.render('tests/cursos/telematica.ejs');
-};
-
 //GET /tests/:subject
 //Cargar todos los quizzes que pertenezcan a una asignatura, y,
 //a partir de ellos formar un array que contenga todas las distintas
 //descripciones de estos, que se mostrarán en una lista.
 exports.subjectTests = (req, res, next) => {
   const subject = req.params.subject;
-  let testids = [];
-  let descs = [];
-  Quiz.findAll({
+
+  Test.findAll({
     where: {subject: subject}
-  }).then(quizzes => {
-    for (var i in quizzes){
-      if (!testids.includes(quizzes[i].testid)){
-        testids.push(quizzes[i].testid)
-        descs.push(quizzes[i].desc)
-      }
-    }
-    res.render('tests/subject_tests.ejs', {subject,testids,descs} );
+  }).then(tests => {
+    res.render('tests/subject_tests.ejs', {subject,tests} );
   }).catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);
     next(error);
@@ -79,16 +31,12 @@ exports.subjectTests = (req, res, next) => {
 exports.playTest = (req, res, next) => {
   const subject = req.params.subject;
   const testid = req.params.testid;
-  let test = [];
-  Quiz.findAll({
-    where: {subject: subject,
-            testid: testid},
-    order: [Sequelize.fn( 'RANDOM' ),]
-  }).then(questions => {
-    test = questions;
-    desc = test[0].desc;
+
+  Test.findByPk(testid, 
+    {include: ['quizzes']}
+  ).then(test => {
     req.session.test = test;
-    res.render('tests/play_test.ejs', {subject,testid,desc,test} );
+    res.render('tests/play_test.ejs', {subject,test} );
   }).catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);
     next(error);
@@ -100,17 +48,11 @@ exports.playTest = (req, res, next) => {
 exports.solvedTest = (req, res, next) => {
   const subject = req.params.subject;
   const testid = req.params.testid;
-  let test = [];
-  let desc;
-  Quiz.findAll({
-    where: {subject: subject,
-            testid: testid}
-  })
-  .then(questions => {
-    test = questions;
-    desc = test[0].desc;
-    req.session.test = test;
-    res.render('tests/solved_test.ejs', {subject,testid,desc,test} );
+  
+  Test.findByPk(testid, 
+    {include: ['quizzes']}
+  ).then(test => {
+    res.render('tests/solved_test.ejs', {subject,test} );
   })
   .catch(error => {
     req.flash('error', 'Error showing subject tests: ' + error.message);

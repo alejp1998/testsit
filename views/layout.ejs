@@ -4,21 +4,9 @@
     <meta charset="utf-8">
     <title>(T)E(S)TSIT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        svg: {
-          fontCache: 'global'
-        }
-      };
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
 
     <style>
@@ -30,7 +18,7 @@
             font-size: 25px;
         }
         .navlogo {
-            background: linear-gradient(to right,#7A10DD ,white);
+            background: linear-gradient(to right,#AD5EF6,white);
         }
         .wrapper {
             max-width: 1200px;
@@ -40,7 +28,6 @@
         }
         #particles-js canvas {
             display: block;
-            vertical-align: bottom;
             -webkit-transform: scale(1);
             -ms-transform: scale(1);
             transform: scale(1);
@@ -48,7 +35,6 @@
             -webkit-transition: opacity .8s ease, -webkit-transform 1.4s ease;
             transition: opacity .8s ease, transform 1.4s ease
         }
-
         #particles-js {
             width: 100%;
             height: 100%;
@@ -57,7 +43,6 @@
             top: 0;
             left: 0
         }
-
         .footer {
           max-width: 1200px;
           margin: auto;
@@ -69,13 +54,13 @@
     <% if (session.user.isAdmin) { %>
     <style>
         .navlogo {
-          background: linear-gradient(to right,hsl(204, 86%, 53%) ,white);
+          background: linear-gradient(to right,hsl(204, 86%, 53%),white);
         }
     </style>
     <% } else if (session.user.isEditor) { %>
     <style>
         .navlogo {
-          background: linear-gradient(to right,hsl(141, 53%, 53%) ,white);
+          background: linear-gradient(to right,hsl(141, 53%, 53%),white);
         }
     </style>
     <% } %>
@@ -106,16 +91,16 @@
         <a class="navbar-link" href="/">Tests (por curso)</a>
         <div class="navbar-dropdown is-boxed">
             <a class="navbar-item" href="/quizzes">Preguntas</a>
-            <a class="navbar-item" href="/tests/primero">Primero</a>
-            <a class="navbar-item" href="/tests/segundo">Segundo</a>
-            <a class="navbar-item" href="/tests/tercero">Tercero</a>
+            <a class="navbar-item" href="/subjects/GITST/1">Primero</a>
+            <a class="navbar-item" href="/subjects/GITST/2">Segundo</a>
+            <a class="navbar-item" href="/subjects/GITST/3">Tercero</a>
             <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link" href="/tests/cuarto">Cuarto</a>
+              <a class="navbar-link" href="/subjects/GITST/4">Cuarto</a>
               <div class="navbar-dropdown is-boxed">
-                  <a class="navbar-item" href="/tests/sistemas">Sist. de Telecomunicación</a>
-                  <a class="navbar-item" href="/tests/electronica">Sist. Electrónicos</a>
-                  <a class="navbar-item" href="/tests/sonidoimagen">Sist. Audiovisuales</a>
-                  <a class="navbar-item" href="/tests/telematica">Sist. Telemáticos</a>
+                  <a class="navbar-item" href="/subjects/GITST/4/sist">Sist. de Telecomunicación</a>
+                  <a class="navbar-item" href="/subjects/GITST/4/elect">Sist. Electrónicos</a>
+                  <a class="navbar-item" href="/subjects/GITST/4/auvis">Sist. Audiovisuales</a>
+                  <a class="navbar-item" href="/subjects/GITST/4/telem">Sist. Telemáticos</a>
               </div>
             </div>
         </div>
@@ -179,7 +164,7 @@
 
 <section class="hero">
     <% if (messages.info) { %>
-        <div class='box has-text-white has-background-info'>
+        <div class='box'>
             <p class="is-size-3">Info:</p>
             <ul>
                 <% for (var i in messages.info) { %>
@@ -190,7 +175,7 @@
     <% } %>
 
     <% if (messages.success) { %>
-        <div class='box has-text-white has-background-success'>
+        <div class='box has-text-success'>
             <p class="is-size-3">Tasks completed successfully:</p>
             <ul>
                 <% for (var i in messages.success) { %>
@@ -201,7 +186,7 @@
     <% } %>
 
     <% if (messages.error) { %>
-        <div class='box has-text-white has-background-danger'>
+        <div class='box has-text-danger'>
             <p class="is-size-3">Errors:</p>
             <ul>
                 <% for (var i in messages.error) { %>

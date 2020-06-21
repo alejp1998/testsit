@@ -40,7 +40,7 @@ exports.index = (req, res, next) => {
 
         const findOptions = {
             ...countOptions,
-            order: [ ['points', 'DESC'] ],
+            order: [ ['hits', 'DESC'] ],
             offset: page_items*(pageno-1),
             limit: page_items
         };
@@ -48,15 +48,25 @@ exports.index = (req, res, next) => {
         return User.findAll(findOptions);
     })
     .then(users => {
-        res.render('users/index', {users});
+        res.render('users/index.ejs', {users});
     })
     .catch(error => next(error));
+};
+
+// GET /signup
+exports.signup = (req, res, next) => {
+    res.render('users/signup.ejs');
+};
+
+// GET /login
+exports.login = (req, res, next) => {
+    res.render('users/login.ejs');
 };
 
 // GET /users/:userId
 exports.show = (req, res, next) => {
     const {user} = req;
-    res.render('users/show', {user});
+    res.render('users/show.ejs', {user});
     //Show magic methods
     //console.log(Object.keys(user.__proto__));
 };

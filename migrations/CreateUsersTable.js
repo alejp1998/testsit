@@ -28,16 +28,6 @@ module.exports = {
           salt: {
             type: Sequelize.STRING
           },
-          points: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            defaultValue: 0
-          },
-          fails: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            defaultValue: 0
-          },
           isAdmin: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
@@ -45,6 +35,31 @@ module.exports = {
           isEditor: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
+          },
+          testsTried: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: '0'
+          },
+          quizzesTried: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: '0'
+          },
+          hits: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: '0'
+          },
+          fails: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: '0'
+          },
+          omissions: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: '0'
           },
           createdAt: {
             type: Sequelize.DATE,

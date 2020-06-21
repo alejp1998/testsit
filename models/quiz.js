@@ -24,6 +24,56 @@ module.exports = function (sequelize, DataTypes) {
             answer3: DataTypes.STRING,
             answer4: DataTypes.STRING,
             answer5: DataTypes.STRING,
-            answer6: DataTypes.STRING
+            answer6: DataTypes.STRING,
+            nTries: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            hits: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            fails: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            omissions: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            n1: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            n2: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            n3: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            n4: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            n5: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            n6: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            }
         });
 };

@@ -11,13 +11,7 @@ const {User,Subject,Test,Quiz} = models;
 //Autoload quiz asociado a :quizId
 exports.load = (req, res, next, quizId) => {
 
-    const options = {
-        include: [
-            {model: User, as: 'author'}
-        ]
-    };
-
-    Quiz.findByPk(quizId, options)
+    Quiz.findByPk(quizId)
     .then(quiz => {
         if (quiz) {
             req.quiz = quiz;

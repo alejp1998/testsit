@@ -50,12 +50,27 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
-        points: {
+        testsTried: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: '0'
+        },
+        quizzesTried: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: '0'
+        },
+        hits: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: '0'
         },
         fails: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: '0'
+        },
+        omissions: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: '0'

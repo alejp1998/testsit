@@ -27,6 +27,26 @@ module.exports = {
                 type: Sequelize.STRING,
                 validate: {notEmpty: {msg: "Description must not be empty"}}
             },
+            nTries: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            hits: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            fails: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            omissions: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
             createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false

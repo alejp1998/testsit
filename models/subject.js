@@ -27,6 +27,26 @@ module.exports = function (sequelize, DataTypes) {
             semester: {
                 type: DataTypes.INTEGER,
                 validate: {notEmpty: {msg: "Semester must not be empty"}}
+            },
+            nTries: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            hits: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            fails: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
+            },
+            omissions: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: '0'
             }
         });
 };

@@ -32,15 +32,15 @@ User.belongsTo(Email, {foreignKey: 'email'});
 Email.belongsTo(User, {foreignKey: 'username'});
 
 // Relation 1-to-N between Test and Quizzes:
-Test.hasMany(Quiz, {foreignKey: 'testid'});
+Test.hasMany(Quiz, {foreignKey: 'testid', as: 'quizzes'});
 Quiz.belongsTo(Test, {as: 'test', foreignKey: 'testid'});
 
 // Relation 1-to-N between Subject and Tests:
-Subject.hasMany(Test, {foreignKey: 'subject'});
+Subject.hasMany(Test, {foreignKey: 'subject', as: 'tests'});
 Test.belongsTo(Subject, {foreignKey: 'subject'});
 
 // Relation 1-to-N between Subject and Quizzes:
-Subject.hasMany(Quiz, {foreignKey: 'subject'});
+Subject.hasMany(Quiz, {foreignKey: 'subject', as: 'quizzes'});
 Quiz.belongsTo(Subject, {foreignKey: 'subject'});
 
 
