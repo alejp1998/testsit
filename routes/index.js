@@ -72,7 +72,7 @@ router.get('/tests/:subject/:testid',ssnCtlr.loginRequired, testCtlr.playTest);
 router.get('/tests/:subject/:testid/solved',ssnCtlr.loginRequired, testCtlr.solvedTest);
 
 /*PUT tests*/
-router.put('/tests/:subject/:desc',ssnCtlr.loginRequired, testCtlr.checkTest);
+router.put('/tests/:subject/:testid',ssnCtlr.loginRequired, testCtlr.checkTest);
 
 /*POST tests*/
 router.post('/addtest/:subject', ssnCtlr.adminOrEditorRequired, testCtlr.addTest);

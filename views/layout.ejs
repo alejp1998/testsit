@@ -17,14 +17,11 @@
         .logo {
             font-size: 25px;
         }
-        .navlogo {
-            background: linear-gradient(to right,#AD5EF6,white);
-        }
         .wrapper {
             max-width: 1200px;
             min-height: 80vh;
             margin: auto;
-            background: white;
+            background-color: rgba(255, 255, 255, 0.3);
         }
         #particles-js canvas {
             display: block;
@@ -49,23 +46,23 @@
         }
     </style>
 
+    <% var color = '#AD5EF6'; %>
     <% if (session.user) { %>
-
+    
     <% if (session.user.isAdmin) { %>
-    <style>
-        .navlogo {
-          background: linear-gradient(to right,hsl(204, 86%, 53%),white);
-        }
-    </style>
+      <% var color = '#209cee'; %>
     <% } else if (session.user.isEditor) { %>
-    <style>
-        .navlogo {
-          background: linear-gradient(to right,hsl(141, 53%, 53%),white);
-        }
-    </style>
+      <% var color = '#23d160'; %>
     <% } %>
 
     <% } %>
+
+    <style>
+        .navlogo {
+          background: linear-gradient(to right,<%=color%>,white);
+        }
+    </style>
+
 </head>
 
 <body>
@@ -133,7 +130,7 @@
         <div class="field is-grouped">
 
           <p class="control">
-            <a class="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet" target="_blank" href="https://twitter.com/intent/tweet?text=(T)E(S)TSIT: brrrrrrrrrrrrrrrrrrrr">
+            <a class="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet" target="_blank" href="https://twitter.com/intent/tweet?text=(T)E(S)TSIT goes brrrrrrrrrrrrrrrrrrrr">
               <span class="icon">
                 <i class="fab fa-twitter"></i>
               </span>
@@ -209,14 +206,12 @@
 
 </div>
 
-<footer class="footer has-background-white">
-  <div class="content has-text-centered">
+<footer class="has-text-centered">
     <p class="subtitle is-4">
       <strong>(T)E(S)TSIT</strong> by <a href="https://radio.clubs.etsit.upm.es/" target="_blank">RadioClub</a>.
       <br>
       <a class='is-size-5' href="https://moodle.upm.es/titulaciones/oficiales/login/login.php" target="_blank">¿No estás seguro de la respuesta? Haber estudiao.</a>
     </p>
-  </div>
 </footer>
 
 </div>
@@ -234,13 +229,13 @@
         }
       },
       "color": {
-        "value": "#8119E3"
+        "value": "<%=color%>"
       },
       "shape": {
         "type": "circle",
         "stroke": {
           "width": 0,
-          "color": "#600EAD"
+          "color": "<%=color%>"
         },
         "polygon": {
           "nb_sides": 5
@@ -274,13 +269,13 @@
       "line_linked": {
         "enable": true,
         "distance": 150,
-        "color": "#600EAD",
+        "color": "<%=color%>",
         "opacity": 0.6,
         "width": 1
       },
       "move": {
         "enable": true,
-        "speed": 3,
+        "speed": 1.5,
         "direction": "none",
         "random": false,
         "straight": false,

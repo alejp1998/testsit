@@ -7,7 +7,7 @@
           <p class="subtitle is-4">Descripción: <%=test.desc%></p>
         </div>
         <div class="column is-narrow">
-          <canvas id="chart-<%=test.testid%>" width="75" height="75"></canvas>
+          <canvas id="chart-<%=test.testid%>" width="100" height="100"></canvas>
         </div>
         <div class="column is-narrow">
           <a href="/tests/<%=subject%>"><%=subject%></a>
@@ -28,7 +28,7 @@
         var myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Aciertos', 'Fallos', 'No contestadas'],
+                labels: ['Aciertos', 'Fallos', 'Omitidas'],
                 datasets: [{
                     data: [<%=test.hits%>, <%=test.fails%>, <%=test.omissions%>],
                     backgroundColor: [
@@ -158,7 +158,7 @@
                       var myChart2 = new Chart(ctx2, {
                           type: 'doughnut',
                           data: {
-                              labels: ['Aciertos', 'Fallos', 'No contestadas'],
+                              labels: ['Aciertos', 'Fallos', 'Omitidas'],
                               datasets: [{
                                   data: [<%=quiz.hits%>, <%=quiz.fails%>, <%=quiz.omissions%>],
                                   backgroundColor: [

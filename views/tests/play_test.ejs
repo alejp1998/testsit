@@ -22,7 +22,7 @@
 
     <div class="columns">
         <div class="column">
-            <form method="post" action="/tests/<%=subject%>/<%=test.desc%>?_method=PUT">
+            <form method="post" action="/tests/<%=subject%>/<%=test.testid%>?_method=PUT">
 
                       <% for (var i in test.quizzes) { %>
                         <% var quiz = test.quizzes[i]; %>

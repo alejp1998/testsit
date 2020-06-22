@@ -113,7 +113,7 @@ exports.checkQuiz = (req, res, next) => {
 	const quiz = req.quiz;
 	const answer = req.body.answer;
 
-	let result;
+	let result,name;
 	let subject = quiz.subject;
 
 	if(!quiz){
@@ -121,8 +121,10 @@ exports.checkQuiz = (req, res, next) => {
 	}
 	  
 	if(Number(quiz.answer) === Number(answer)){
+		name = 'hits';
 		result = 'hit';
 	}else{
+		name = 'fails';
 		result = 'fail';
 	}
 
@@ -132,18 +134,32 @@ exports.checkQuiz = (req, res, next) => {
 			const userId = req.session.user.id;
 			User.findByPk(userId)
 			.then(user => {
-				if(result === 'hit'){
-					user.hits++;
-				}else{
-					user.fails++;
-				}
-	
+				user[name]++;
+				user.quizzesTried++;
 				req.session.user = user;
-				user.save({fields: ["hits","fails"]})
-				.then( () => {
-					res.render('quizzes/check.ejs', {subject,test,quiz,result,answer} );
+
+				user.save({fields: ["quizzesTried","hits","fails"]})
+				.then(() => {
+					Subject.findByPk(quiz.subject)
+					.then(subject => {
+						subject[name]++;
+						subject.nTries++;
+
+						subject.save({fields: ["nTries","hits","fails"]})
+						.then(() => {
+							quiz[name]++;
+							quiz.nTries++;
+							quiz['n'+answer]++;
+							
+							quiz.save({fields: ["nTries","hits","fails","n"+answer]})
+							.then(() => {
+								subject = quiz.subject;
+								res.render('quizzes/check.ejs', {subject,test,quiz,result,answer} );
+							})
+						})
+					})
 				});
-			});
+			})
 		}else{
 			return res.render('quizzes/check.ejs', {subject,test,quiz,result,answer} );
 		}

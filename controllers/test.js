@@ -5,7 +5,7 @@ const Op = Sequelize.Op;
 const paginate = require('../helpers/paginate').paginate;
 var ssn;
 
-const {Subject,Test,Quiz} = models;
+const {User,Subject,Test,Quiz} = models;
 
 //GET /tests/:subject
 //Cargar todos los quizzes que pertenezcan a una asignatura, y,
@@ -49,7 +49,8 @@ exports.playTest = (req, res, next) => {
 //las preguntas en rojo si hemos fallado y en verde si acertamos, la puntuación total etc
 exports.checkTest = (req, res, next) => {
   const test = req.session.test;
-  const subject = req.params.subject;
+  const {subject,testid} = req.params;
+
   let correct = 0;
   let incorrect = 0;
   let nonanswered = 0;
@@ -57,20 +58,82 @@ exports.checkTest = (req, res, next) => {
   let answers = req.body;
   let N = Object.keys(test.quizzes).length;
 
+  var promises = [];
   for (var i = 0; i < N; i++) {
+    let quiz = test.quizzes[i]; 
+    let omission,hit,fail = 0;
     if(answers['answer'+ i] === '0'){
       test.quizzes[i].result = 'na';
       nonanswered++;
+      omission = 1;
     }else if( Number(test.quizzes[i].answer) === Number(answers['answer'+ i]) ){
       test.quizzes[i].result = 'hit';
       correct++;
+      hit = 1;
     }else if( Number(test.quizzes[i].answer) !== Number(answers['answer'+ i]) ){
       test.quizzes[i].result = 'fail';
       incorrect++;
+      fail = 1;
     }
+    
+    promises.push(
+      Quiz.findByPk(quiz.id)
+      .then(quiz => {
+        quiz.nTries++;
+        quiz.hits += hit;
+        quiz.fails += fail;
+        quiz.omissions += omission;
+        quiz['n'+answers['answer'+ i]]++;
+        quiz.save({fields: ["nTries","hits","fails","omissions","n"+answers['answer'+ i]]})
+      })
+    )
   }
 
-  res.render('tests/result_test.ejs', {test,answers,subject,correct,incorrect,nonanswered} );
+  Promise.all(promises)
+  .then(() => {
+    Test.findByPk(testid)
+    .then(test => {
+      test.nTries++;
+      test.hits += correct;
+      test.fails += incorrect;
+      test.omissions += nonanswered;
+
+      test.save({fields: ["nTries","hits","fails","omissions"]})
+      .then(() => {
+        const userId = req.session.user.id;
+        User.findByPk(userId)
+        .then(user => {
+          user.hits += correct;
+          user.fails += incorrect;
+          user.omissions += nonanswered;
+          user.testsTried++;
+          req.session.user = user;
+
+          user.save({fields: ["testsTried","hits","fails","omissions"]})
+          .then(() => {
+            Subject.findByPk(subject)
+            .then(subject => {
+              subject.hits += correct;
+              subject.fails += incorrect;
+              subject.omissions += nonanswered;
+              subject.nTries++;
+
+              subject.save({fields: ["nTries","hits","fails","omissions"]})
+              .then(() => {
+                subject = subject.subject;
+                res.render('tests/result_test.ejs', {test,answers,subject,correct,incorrect,nonanswered} );
+              });
+            });
+          });
+        });
+      });
+    });
+  })
+	.catch(error => {
+		req.flash('error', 'Error checking the Test: ' + error.message);
+		next(error);
+	});
+  
 };
 
 //GET /tests/:subject/:desc/solved
@@ -280,19 +343,19 @@ exports.addTest = (req, res, next) => {
 
 //DEL /tests/:subject/:testid
 exports.deleteTest = (req, res, next) => {
-  const subject = req.params.subject;
-  const testid = req.params.testid;
+    const subject = req.params.subject;
+    const testid = req.params.testid;
 
-  Quiz.destroy(
-    {where: {
-      testid: testid
-    }
-  })
-  .then( () => {
-    req.flash('success', 'Test deleted successfully.');
-		res.redirect('/tests/' + subject);
-	}).catch(error => {
-		req.flash('error', 'Error deleting the Test: ' + error.message);
-		next(error);
-	});
+    Test.destroy({where: {testid: testid}})
+    .then(() => {
+        Quiz.destroy({where: {testid: testid}})
+        .then(() => {
+          req.flash('success', 'Test deleted successfully.');
+          res.redirect('/tests/' + subject);
+        })
+    })
+    .catch(error => {
+      req.flash('error', 'Error deleting the Test: ' + error.message);
+      next(error);
+    });
 };
