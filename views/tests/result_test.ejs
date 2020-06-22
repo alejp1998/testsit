@@ -66,11 +66,11 @@
                 <% var n = Number(i) + 1; %>
 
                       <div class="box">
-                        <% if(quiz.result === 'correct'){ %>
+                        <% if(quiz.result === 'hit'){ %>
                           <h3 class="subtitle is-4"><span class="tag has-background-success is-medium"><%=n%></span>  <%=quiz.question%></h3>
-                        <% }else if(quiz.result === 'incorrect'){ %>
+                        <% }else if(quiz.result === 'fail'){ %>
                           <h3 class="subtitle is-4"><span class="tag has-background-danger is-medium"><%=n%></span>  <%=quiz.question%></h3>
-                        <% }else{ %>
+                        <% }else if(quiz.result === 'na') { %>
                           <h3 class="subtitle is-4"><span class="tag has-background-light is-medium"><%=n%></span>  <%=quiz.question%></h3>
                         <% } %>
                           <div class="columns">

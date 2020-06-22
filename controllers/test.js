@@ -59,13 +59,13 @@ exports.checkTest = (req, res, next) => {
 
   for (var i = 0; i < N; i++) {
     if(answers['answer'+ i] === '0'){
-      test.quizzes[i].result = 'nonanswered';
+      test.quizzes[i].result = 'na';
       nonanswered++;
     }else if( Number(test.quizzes[i].answer) === Number(answers['answer'+ i]) ){
-      test.quizzes[i].result = 'correct';
+      test.quizzes[i].result = 'hit';
       correct++;
     }else if( Number(test.quizzes[i].answer) !== Number(answers['answer'+ i]) ){
-      test.quizzes[i].result = 'incorrect';
+      test.quizzes[i].result = 'fail';
       incorrect++;
     }
   }
@@ -91,28 +91,6 @@ exports.solvedTest = (req, res, next) => {
 };
 
 
-//GET /newtest/:subject/
-//Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
-exports.addTestForm = (req, res, next) => {
-  const subject = req.params.subject;
-	res.render('tests/newtest.ejs', {subject} );
-};
-
-
-//POST /newtest/:subject/
-//Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
-exports.addTestQuestions = (req, res, next) => {
-  const subject = req.params.subject;
-  const testid = req.body.testid;
-  const year = req.body.year;
-  const month = req.body.month;
-  const desc = req.body.desc;
-  const npreg = req.body.npreg;
-  const noptions = req.body.noptions;
-	res.render('tests/addtest.ejs', {subject,testid,year,month,desc,npreg,noptions} );
-};
-
-
 //GET /edittest/:subject/:testid
 //Devuelve el form para editar el test
 exports.editTestForm = (req, res, next) => {
@@ -135,65 +113,60 @@ exports.editTestForm = (req, res, next) => {
 
 //POST /edittest/:subject/:testid
 exports.editTest = (req, res, next) => {
-  let test = [];
-
-  const subject = req.params.subject;
-  const testid = req.params.testid;
+  const {subject,testid} = req.params;
 
   const new_testid = req.body.testid;
-  const desc = req.body.desc;
-  const year = req.body.year;
-  const month = req.body.month;
+  const {desc,year,month} = req.body;
 
-  const questions = req.body.question;
-  const answers = req.body.answer;
-  const answers1 = req.body.answer1;
-  const answers2 = req.body.answer2;
-  const answers3 = req.body.answer3;
-  const answers4 = req.body.answer4;
-  const answers5 = req.body.answer5;
-  const answers6 = req.body.answer6;
+  const {question,answer,answer1,answer2,answer3,answer4,answer5,answer6} = req.body;
 
-  //Create test
-  for (var i in questions){
-    test_question = {
-      subject: subject,
-      desc: desc,
+  //Build test instance
+  const test = Test.build({
+    testid: new_testid,
+    subject: subject, 
+    desc: desc,
+    year: year,
+    month: month
+  })
+
+  //Create quizzes
+  let quizzes = [];
+  for (var i in question){
+    let quiz = {
       testid: new_testid,
-      year: year,
-      month: month,
-      question: questions[i],
-      answer: Number(answers[i]),
-      answer1: answers1[i],
-      answer2: answers2[i],
-      answer3: answers3[i],
-      answer4: answers4[i],
-      answer5: answers5[i],
-      answer6: answers6[i]
+      subject: subject,
+      question: question[i],
+      answer: Number(answer[i]),
+      answer1: answer1[i],
+      answer2: answer2[i],
+      answer3: answer3[i],
+      answer4: answer4[i],
+      answer5: answer5[i],
+      answer6: answer6[i]
     }
-    test.push(test_question);
+    quizzes.push(quiz);
   }
 
-  Quiz.destroy(
-    {where: {
-      testid: testid
-    }
+  Test.destroy(
+    {where: {testid: testid}
+  }).then( () => {
+    Quiz.destroy(
+      {where: {testid: testid}
+    }).then( () => {
+      test.save()
+      .then( () => {
+        Quiz.bulkCreate(quizzes)
+        .then(() => {
+          req.flash('success', 'Test updated succesfully');
+          res.redirect('/tests/' + subject + '/' + new_testid + '/solved');
+        })
+      })
+    })
   })
-  .then( () => {
-    Quiz.bulkCreate(test)
-		.then( () => {
-			req.flash('success', 'Test updated succesfully');
-			res.redirect('/tests/' + subject + '/' + new_testid + '/solved');
-		})
-		.catch(Sequelize.ValidationError, error => {
-			req.flash('error', 'There are errors in the form:');
-			error.errors.forEach(({message}) => req.flash('error', message));
-			res.render('quizzes/new', {test});
-		})
-		.catch(error => {
-			req.flash('error', 'Error updating the Quiz: ' + error.message);
-			next(error);
-		});
+  .catch(Sequelize.ValidationError, error => {
+    req.flash('error', 'There are errors in the form:');
+    error.errors.forEach(({message}) => req.flash('error', message));
+    res.render('tests/edittest.ejs', {subject,test,npreg} );
   })
   .catch(error => {
 		req.flash('error', 'Error updating the Test: ' + error.message);
@@ -201,72 +174,103 @@ exports.editTest = (req, res, next) => {
 	});
 };
 
+
+//GET /newtest/:subject/
+//Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
+exports.addTestForm = (req, res, next) => {
+  const subject = req.params.subject;
+	res.render('tests/newtest.ejs', {subject} );
+};
+
+
+//POST /newtest/:subject/
+//Indicamos campos comunes del test: id, año, mes, descripción y número de preguntas. 
+exports.addTestQuestions = (req, res, next) => {
+  const subject = req.params.subject;
+  const {testid,year,month,desc,npreg,noptions} = req.body;
+
+  Test.findByPk(testid)
+  .then(test => {
+    if(!test){
+      res.render('tests/addtest.ejs', {subject,testid,year,month,desc,npreg,noptions} );
+    }else{
+      req.flash('error', 'TestId already exists');
+      res.render('tests/newtest.ejs', {subject} );
+    }
+  })
+  .catch(error => {
+		req.flash('error', 'Error creating the new test form: ' + error.message);
+		next(error);
+	});
+	
+};
+
+
 //POST /addtest/:subject/
 exports.addTest = (req, res, next) => {
-  let test = [];
-
-  N = 100;
-  let empty_answers = new Array(N); 
-  for (var i = 0; i < N; i++) empty_answers[i] = ''; 
-
-  const subject = req.params.subject;
-  const desc = req.body.desc;
-  const testid = req.body.testid;
-  const year = req.body.year;
-  const month = req.body.month;
+  const {subject} = req.params;
+  const {testid,desc,year,month} = req.body;
   const noptions = Number(req.body.noptions);
 
-  const questions = req.body.question;
-  const answers = req.body.answer;
-  let answers1 = req.body.answer1; 
-  let answers2 = req.body.answer2;
-  let answers3 = req.body.answer3;
-  let answers4 = req.body.answer4;
-  let answers5 = req.body.answer5;
-  let answers6 = req.body.answer6;
+  const {question,answer} = req.body;
+  let {answer1,answer2,answer3,answer4,answer5,answer6} = req.body; 
+
+  let npreg = question.length;
+  let empty_answers = new Array(npreg); 
+  for (var i = 0; i < npreg; i++) empty_answers[i] = '';
 
   if(noptions < 3){
-    answers3 = empty_answers;
+    answer3 = empty_answers;
   }
   if(noptions < 4){
-    answers4 = empty_answers;
+    answer4 = empty_answers;
   }
   if(noptions < 5){
-    answers5 = empty_answers;
+    answer5 = empty_answers;
   }
   if(noptions < 6){
-    answers6 = empty_answers;
+    answer6 = empty_answers;
   }
+
+  //Build test instance
+  const test = Test.build({
+    testid: testid,
+    subject: subject, 
+    desc: desc,
+    year: year,
+    month: month
+  })
 
   //Create test
-  for (var i in questions){
-    test_question = {
-      subject: subject,
-      desc: desc,
+  let quizzes = [];
+  for (var i in question){
+    let quiz = {
       testid: testid,
-      year: year,
-      month: month,
-      question: questions[i],
-      answer: Number(answers[i]),
-      answer1: answers1[i],
-      answer2: answers2[i],
-      answer3: answers3[i],
-      answer4: answers4[i],
-      answer5: answers5[i],
-      answer6: answers6[i]
+      subject: subject,
+      question: question[i],
+      answer: Number(answer[i]),
+      answer1: answer1[i],
+      answer2: answer2[i],
+      answer3: answer3[i],
+      answer4: answer4[i],
+      answer5: answer5[i],
+      answer6: answer6[i]
     }
-    test.push(test_question);
+    quizzes.push(quiz);
   }
 
-  Quiz.bulkCreate(test)
+  test.save()
   .then( () => {
-    req.flash('success', 'Test added succesfully');
-    res.redirect('/tests/' + subject);
+    Quiz.bulkCreate(quizzes)
+    .then(() => {
+      req.flash('success', 'Test added succesfully');
+      res.redirect('/tests/' + subject + '/' + testid + '/solved');
+    })
   })
   .catch(Sequelize.ValidationError, error => {
     req.flash('error', 'There are errors in the form:');
     error.errors.forEach(({message}) => req.flash('error', message));
-    res.render('quizzes/new', {test});
+    res.render('tests/addtest.ejs', {subject,testid,year,month,desc,npreg,noptions} );
   })
   .catch(error => {
     req.flash('error', 'Error adding the Quiz: ' + error.message);

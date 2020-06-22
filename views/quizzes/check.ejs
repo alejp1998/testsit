@@ -1,31 +1,202 @@
 <div class="content">
-  
-	<h2 class="subtitle is-4"><%=result%></h2>
-
-    <%if(result=="Correct"){%>
-	    
-      <div class="notification is-success">
-	      
-        <h3 class="subtitle is-5">Congratulations</h3>
-        <span class="tag is-small is-ligth">Points: <%= session.user.points %></span>
-        <span class="tag is-small is-dark">Fails: <%= session.user.fails %></span>
-
-	  	</div>
-	  	<a href="/quizzes" class="button is-info">Go Back</a>
-
+    <%if(result=="hit"){%>
+      <p class="title is-1 has-text-success">Acertaste :)</p>
     <%}else{%>
-    	
-      <div class="notification is-danger">
-      		
-        <h3 class="subtitle is-5">Wrong Answer</h3>
-        <span class="tag is-small is-ligth">Points: <%= session.user.points %></span>
-        <span class="tag is-small is-dark">Fails: <%= session.user.fails %></span>
-
-    	</div>
-
-    	<a href="/quizzes/<%=quiz.id%>/play" class="button is-warning" name="answer">Intertar de nuevo</a>
-    	<a href="/quizzes" class="button is-info">Volver</a>
-
+      <p class="title is-1 has-text-danger">Fallaste :(</p>
     <%}%>
+
+    <div class="box">
+      <div class="columns">
+        <div class="column">
+          <p class="title is-2">Test Id: <%=test.testid%></p>
+          <p class="subtitle is-4">Descripción: <%=test.desc%></p>
+        </div>
+        <div class="column is-narrow">
+          <canvas id="chart-<%=test.testid%>" width="75" height="75"></canvas>
+        </div>
+        <div class="column is-narrow">
+          <a href="/tests/<%=subject%>"><%=subject%></a>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <p class="subtitle is-6">Veces intentado: <%=test.nTries%></p>
+        </div>
+        <div class="column is-narrow">
+          <span class="tag has-text-white has-background-info is-large">RESULTADO PREGUNTA</span>
+        </div>
+      </div>
+    </div>
+  
+    <script>
+        var ctx = document.getElementById('chart-<%=test.testid%>').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Aciertos', 'Fallos', 'No contestadas'],
+                datasets: [{
+                    data: [<%=test.hits%>, <%=test.fails%>, <%=test.omissions%>],
+                    backgroundColor: [
+                        'hsl(141, 53%, 53%)',
+                        'hsl(348, 100%, 61%)',
+                        'hsl(0, 0%, 71%)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                legend: false,
+            }
+        });
+    </script>
+
+    <div class="box">
+        <p class="title is-4"><%=quiz.question%></p>
+        <div class="columns">
+          <div class="column">
+            <ul>
+                <% if(quiz.answer1){ %>
+                  <% if(Number(quiz.answer) === 1){ %>
+                    <li>
+                      <p class="subtitle is-4"><b class="has-text-success">A.  </b><%=quiz.answer1%></p>
+                    </li>
+                  <% }else if(answer === '1'){ %>
+                    <li>
+                      <p class="subtitle is-5"><b class="has-text-danger">A.  </b><%=quiz.answer1%></p>
+                    </li>
+                  <% }else{ %>
+                    <li>
+                      <p class="subtitle is-5">A.  <%=quiz.answer1%></p>
+                    </li>
+                  <% } %>
+                <% } %>
+                <% if(quiz.answer2){ %>
+                  <% if(Number(quiz.answer) === 2){ %>
+                    <li>
+                      <p class="subtitle is-4"><b class="has-text-success">B.  </b><%=quiz.answer2%></p>
+                    </li>
+                  <% }else if(answer === '2'){ %>
+                    <li>
+                      <p class="subtitle is-5"><b class="has-text-danger">B.  </b><%=quiz.answer2%></p>
+                    </li>
+                  <% }else{ %>
+                    <li>
+                      <p class="subtitle is-5">B.  <%=quiz.answer2%></p>
+                    </li>
+                  <% } %>
+                <% } %>
+                <% if(quiz.answer3){ %>
+                  <% if(Number(quiz.answer) === 3){ %>
+                    <li>
+                      <p class="subtitle is-4"><b class="has-text-success">C.  </b><%=quiz.answer3%></p>
+                    </li>
+                  <% }else if(answer === '3'){ %>
+                    <li>
+                      <p class="subtitle is-5"><b class="has-text-danger">C.  </b><%=quiz.answer3%></p>
+                    </li>
+                  <% }else{ %>
+                    <li>
+                      <p class="subtitle is-5">C.  <%=quiz.answer3%></p>
+                    </li>
+                  <% } %>
+                <% } %>
+                <% if(quiz.answer4){ %>
+                  <% if(Number(quiz.answer) === 4){ %>
+                    <li>
+                      <p class="subtitle is-4"><b class="has-text-success">D.  </b><%=quiz.answer4%></p>
+                    </li>
+                  <% }else if(answer === '4'){ %>
+                    <li>
+                      <p class="subtitle is-5"><b class="has-text-danger">D.  </b><%=quiz.answer4%></p>
+                    </li>
+                  <% }else{ %>
+                    <li>
+                      <p class="subtitle is-5">D.  <%=quiz.answer4%></p>
+                    </li>
+                  <% } %>
+                <% } %>
+                <% if(quiz.answer5){ %>
+                  <% if(Number(quiz.answer) === 5){ %>
+                    <li>
+                      <p class="subtitle is-4"><b class="has-text-success">E.  <%=quiz.answer5%></b></p>
+                    </li>
+                  <% }else if(answer === '5'){ %>
+                    <li>
+                      <p class="subtitle is-5"><b class="has-text-danger">E.  </b><%=quiz.answer5%></p>
+                    </li>
+                  <% }else{ %>
+                    <li>
+                      <p class="subtitle is-5">E.  <%=quiz.answer5%></p>
+                    </li>
+                  <% } %>
+                <% } %>
+                <% if(quiz.answer6){ %>
+                  <% if(Number(quiz.answer) === 6){ %>
+                    <li>
+                      <p class="subtitle is-4"><b class="has-text-success">F.  <%=quiz.answer6%></b></p>
+                    </li>
+                  <% }else if(answer === '6'){ %>
+                    <li>
+                      <p class="subtitle is-5"><b class="has-text-danger">F.  </b><%=quiz.answer6%></p>
+                    </li>
+                  <% }else{ %>
+                    <li>
+                      <p class="subtitle is-5">F.  <%=quiz.answer6%></p>
+                    </li>
+                  <% } %>
+                <% } %>
+            </ul>
+          </div>
+          <div class="column is-narrow">
+            <canvas id="chart1-<%=quiz.id%>" width="100" height="100"></canvas>
+          </div>
+          <div class="column is-narrow">
+            <canvas id="chart2-<%=quiz.id%>" width="100" height="100"></canvas>
+          </div>
+        </div>
+          
+        <script>
+            var ctx1 = document.getElementById('chart1-<%=quiz.id%>').getContext('2d');
+            var myChart1 = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['A', 'B', 'C', 'D', 'E', 'F'],
+                    datasets: [{
+                        data: [<%=quiz.n1%>, <%=quiz.n2%>, <%=quiz.n3%>,
+                              <%=quiz.n4%>, <%=quiz.n5%>, <%=quiz.n6%>],
+                        backgroundColor: [
+                          '#1f77b4','#ff7f0e','#2ca02c',
+                          '#d62728','#9467bd','#8c564b'
+                        ]
+                    }]
+                },
+                options: {
+                    legend: false,
+                }
+            });
+
+            var ctx2 = document.getElementById('chart2-<%=quiz.id%>').getContext('2d');
+            var myChart2 = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Aciertos', 'Fallos', 'No contestadas'],
+                    datasets: [{
+                        data: [<%=quiz.hits%>, <%=quiz.fails%>, <%=quiz.omissions%>],
+                        backgroundColor: [
+                            'hsl(141, 53%, 53%)',
+                            'hsl(348, 100%, 61%)',
+                            'hsl(0, 0%, 71%)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    legend: false,
+                }
+            });
+        </script>
+
+    </div>
+    <a href="/quizzes" class="button is-info is-large">Volver</a>
 
 </div>

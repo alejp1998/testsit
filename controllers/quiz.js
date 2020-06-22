@@ -31,7 +31,7 @@ exports.adminOrAuthorRequired = (req, res, next) => {
 
     if (isAdmin || isAuthor) {
         next();
-    } else {
+    }else{
         console.log('Prohibited operation: The logged in user is not the author of the quiz, nor an administrator.');
         res.send(403);
     }
@@ -41,46 +41,46 @@ exports.adminOrAuthorRequired = (req, res, next) => {
 // GET /quizzes
 exports.index = (req, res, next) => {
     let countOptions = {
-          where: {}
-      };
+		where: {}
+	};
     let title = '';
 
     //Search quizzes
     const search = req.query.search || '';
     if(search){
-      if(search==='choice'){
-        countOptions.where = {choice: true};
-      }else{
-        //Normalizamos texto sustituyendo los blancos por %
-        const search_like = "%" + search.replace(/ +/g,"%") + "%";
-        //Creamos la expresion de la busqueda
-        countOptions.where = {question: { [Op.like]: search_like}};
-      }
+		if(search==='choice'){
+			countOptions.where = {choice: true};
+		}else{
+			//Normalizamos texto sustituyendo los blancos por %
+			const search_like = "%" + search.replace(/ +/g,"%") + "%";
+			//Creamos la expresion de la busqueda
+			countOptions.where = {question: { [Op.like]: search_like}};
+		}
 
     }
 
     if(req.user && search!='friends'){
-      countOptions.where.authorId = req.user.id;
-      title = req.user.username + "'s Quizzes";
+		countOptions.where.authorId = req.user.id;
+		title = req.user.username + "'s Quizzes";
     }
 
     //Si no hemos buscado nada, muestra todos los quizzes
     Quiz.count(countOptions)
     .then(count => {
-      //Pagination
-    const page_items = 5;
-    //The page shown is in the query
-    const pageno = Number(req.query.pageno) || 1;
-    //Create String with HTML to render pagination buttons
-    res.locals.paginate_control = paginate(count, page_items, pageno, req.url);
+      	//Pagination
+		const page_items = 5;
+		//The page shown is in the query
+		const pageno = Number(req.query.pageno) || 1;
+		//Create String with HTML to render pagination buttons
+		res.locals.paginate_control = paginate(count, page_items, pageno, req.url);
 
-    const findOptions = {
-      ...countOptions,
-      offset: page_items*(pageno-1),
-      limit: page_items
-    };
+		const findOptions = {
+		...countOptions,
+		offset: page_items*(pageno-1),
+		limit: page_items
+		};
 
-    return Quiz.findAll(findOptions);
+		return Quiz.findAll(findOptions);
     }).then(quizzes => {
       res.render('quizzes/index.ejs',{quizzes,search,title});
     })
@@ -88,81 +88,100 @@ exports.index = (req, res, next) => {
 };
 
 
-
-
 //GET /quizzes/:quizId/play
 exports.playQuiz = (req, res, next) => {
-  const quiz = req.quiz;
-  const testid = quiz.testid
-  const subject = quiz.subject;
-  const desc = quiz.desc;
+	const quiz = req.quiz;
+	const testid = quiz.testid
+	const subject = quiz.subject;
 
-	if(!quiz){
-		res.render(`El quiz ${req.params.quizId} no existe.`);
-	}else{
-		res.render('quizzes/play.ejs', {quiz,subject,testid,desc} );
-	}
+	Test.findByPk(testid)
+	.then(test => {
+		if(!quiz){
+			res.render(`El quiz ${req.params.quizId} no existe.`);
+		}else{
+			res.render('quizzes/play.ejs', {subject,test,quiz} );
+		}
+	})
+	.catch(error => {
+		req.flash('error', 'Error playing the Quiz: ' + error.message);
+		next(error);
+	});
 };
 
 //PUT /quizzes/:quizId/check
 exports.checkQuiz = (req, res, next) => {
-	let result;
 	const quiz = req.quiz;
 	const answer = req.body.answer;
+
+	let result;
+	let subject = quiz.subject;
+
 	if(!quiz){
 		return res.render(`El quiz ${req.params.quizId} no existe.`);
-  }
-  
+	}
+	  
 	if(Number(quiz.answer) === Number(answer)){
-		result = "Correct";
+		result = 'hit';
 	}else{
-		result = "Incorrect";
+		result = 'fail';
 	}
 
-	if(req.session.user){
-		const userId = req.session.user.id;
-    User.findByPk(userId)
-		.then(user => {
-			if(result === "Correct"){
-				user.points++;
-			}else{
-				user.fails++;
-      }
-      
-			req.session.user = user;
-			user.save({fields: ["points","fails"]})
-      .then( () => 
-        res.render('quizzes/check.ejs', {quiz,result} 
-      ));
-		});
-	}else{
-		return res.render('quizzes/check.ejs', {quiz,result} );
-	}
+	Test.findByPk(quiz.testid)
+	.then(test => {
+		if(req.session.user){
+			const userId = req.session.user.id;
+			User.findByPk(userId)
+			.then(user => {
+				if(result === 'hit'){
+					user.hits++;
+				}else{
+					user.fails++;
+				}
+	
+				req.session.user = user;
+				user.save({fields: ["hits","fails"]})
+				.then( () => {
+					res.render('quizzes/check.ejs', {subject,test,quiz,result,answer} );
+				});
+			});
+		}else{
+			return res.render('quizzes/check.ejs', {subject,test,quiz,result,answer} );
+		}
+	})
+	.catch(error => {
+		req.flash('error', 'Error checking the Quiz: ' + error.message);
+		next(error);
+	});
 };
 
 //GET /quizzes/:quizId/edit
 exports.editQuiz = (req, res, next) => {
-  const quiz = req.quiz;
-  const testid = quiz.testid;
-  const subject = quiz.subject;
-  const desc = quiz.desc;
-  
-	if(!quiz){
-		res.render(`El quiz ${req.params.quizId} no existe.`);
-	}else{
-		res.render('quizzes/edit.ejs', {quiz,subject,testid,desc} );
-	}
+	const quiz = req.quiz;
+	const testid = quiz.testid;
+	const subject = quiz.subject;
+	
+	Test.findByPk(testid)
+	.then(test => {
+		if(!quiz){
+			res.render(`El quiz ${req.params.quizId} no existe.`);
+		}else{
+			res.render('quizzes/edit.ejs', {subject,test,quiz} );
+		}
+	})
+	.catch(error => {
+		req.flash('error', 'Error editing the Quiz: ' + error.message);
+		next(error);
+	});
 };
 
 //PUT /quizzes/:quizId
 exports.updateQuiz = (req, res, next) => {
 	const id = req.quiz.id;
-	var quiz = req.body;
+	let quiz = req.body;
 	quiz.id = id;
-	const {course,subject,desc,answer,answer1,answer2,answer3,answer4,answer5,answer6} = quiz;
 
-	if(Number(answer)<=6 && Number(answer)>=1){
-		Quiz.update( quiz, { where: {id} } )
+	if(Number(quiz.answer)>=1 && Number(quiz.answer)<=6){
+		Quiz.update(quiz, { where: {id} } )
 		.then(() => {
 			req.flash('success','Quiz updated succesfully');
 			res.redirect('/quizzes');
@@ -183,37 +202,55 @@ exports.updateQuiz = (req, res, next) => {
 //GET /quizzes/:quizId
 exports.showQuiz = (req, res, next) => {
 	const {quiz} = req;
-	res.render('quizzes/show.ejs', {quiz} );
+	const subject = quiz.subject;
+
+	Test.findByPk(quiz.testid)
+	.then(test => {
+		if(!quiz){
+			res.render(`El quiz ${req.params.quizId} no existe.`);
+		}else{
+			res.render('quizzes/show.ejs', {subject,test,quiz} );
+		}
+	})
+	.catch(error => {
+		req.flash('error', 'Error editing the Quiz: ' + error.message);
+		next(error);
+	});
 };
 
 //GET /quizzes/new
 exports.newQuiz = (req, res, next) => {
-	const quiz = {question: '', answer: '', answer1: '', answer2: '', answer3: '', answer4: '', answer5: '', answer6: ''};
+	const quiz = {subject: '', testid: '', question: '', answer: '', answer1: '', answer2: '', answer3: '', answer4: '', answer5: '', answer6: ''};
 	res.render('quizzes/new.ejs',{quiz});
 };
 
 //POST /quizzes/
 exports.addQuiz = (req, res, next) => {
-	const {course,testid,subject,desc,question,answer,answer1,answer2,answer3,answer4,answer5,answer6} = req.body;
+	const {subject,testid,question,answer,answer1,answer2,answer3,answer4,answer5,answer6} = req.body;
+	const quiz = {subject,testid,question,answer,answer1,answer2,answer3,answer4,answer5,answer6};
 
-	const authorId = req.session.user && req.session.user.id || 0;
-
-	const quiz = {course,testid,subject,desc,question,answer,answer1,answer2,answer3,answer4,answer5,answer6,authorId};
-
-	Quiz.create(quiz)
-  .then(() => {
-    req.flash('success', 'Quiz added succesfully');
-    res.redirect('/quizzes');
-  })
-  .catch(Sequelize.ValidationError, error => {
-    req.flash('error', 'There are errors in the form:');
-    error.errors.forEach(({message}) => req.flash('error', message));
-    res.render('quizzes/new', {quiz});
-  })
-  .catch(error => {
-    req.flash('error', 'Error adding the Quiz: ' + error.message);
-    next(error);
-  });
+	Test.findByPk(testid)
+	.then(test => {
+		if(test){
+			Quiz.create(quiz)
+			.then(() => {
+				req.flash('success', 'Quiz added succesfully');
+				res.redirect('/quizzes');
+			})
+		}else{
+			req.flash('error', 'No existe el test con el TestId indicado');
+			res.render('quizzes/new', {quiz});
+		}
+	})
+	.catch(Sequelize.ValidationError, error => {
+		req.flash('error', 'There are errors in the form:');
+		error.errors.forEach(({message}) => req.flash('error', message));
+		res.render('quizzes/new', {quiz});
+	})
+	.catch(error => {
+		req.flash('error', 'Error adding the Quiz: ' + error.message);
+		next(error);
+	});
 };
 
 
@@ -228,86 +265,4 @@ exports.deleteQuiz = (req, res, next) => {
 		req.flash('error', 'Error deleting the Quiz: ' + error.message);
 		next(error);
 	});
-};
-
-//GET /quizzes/randomplay
-exports.randomPlay = (req,res,next) => {
-	ssn = req.session;
-	ssn.score = ssn.score || 0;
-	if(!ssn.score){
-		ssn.randomPlay = [];
-	}
-
-	Quiz.count()
-	.then( (count) => {
-		req.session.nquizzes = count;
-		Quiz.findOne({
-			where: {id: {[Op.notIn]: ssn.randomPlay}},
-			order: [Sequelize.fn( 'RANDOM' ),]
-		}).then(quiz => {
-			const score = ssn.score;
-			if(!quiz){
-				ssn.score = 0;
-				return res.render('quizzes/random_nomore.ejs', {score} );
-			}else{
-				return res.render('quizzes/random_play.ejs', { quiz , score} );
-			}
-		});
-	}).catch(error => {
-		req.flash('error', 'Error asking next question: ' + error.message);
-		next(error);
-	});
-
-};
-
-//GET /quizzes/randomcheck/:quizId
-exports.randomCheck = (req, res, next) => {
-	ssn = req.session;
-	const answer = req.body.answer;
-	const quiz = req.quiz;
-	let score = ssn.score;
-
-	let result = false;
-
-	if(!answer){
-		req.flash('error','Answer empty');
-		return res.render('quizzes/random_play.ejs',{ quiz , score});
-	}
-
-	if(answer.toLowerCase().trim()===quiz.answer.toLowerCase().trim()){
-		result = true;
-		ssn.score++;
-		score++;
-		ssn.randomPlay.push(quiz.id);
-	}
-
-	if(req.session.user){
-		if(!result){
-			ssn.score = 0;
-			const userId = req.session.user.id;
-			User.findByPk(userId)
-			.then(user => {
-				user.fails++;
-				req.session.user = user;
-				user.save({fields: ["points","fails"]})
-				.then( () => res.render('quizzes/random_result.ejs', {result,score,answer} ));
-			});
-		}else{
-			const userId = req.session.user.id;
-		  User.findByPk(userId)
-			.then(user => {
-				user.points++;
-				req.session.user = user;
-				user.save({fields: ["points","fails"]})
-				.then( () => res.render('quizzes/random_result.ejs', {result,score,answer} ));
-			});
-		}
-	}else{
-		if(!result){
-			ssn.score = 0;
-		}
-		return res.render('quizzes/random_result.ejs', {result,score,answer} );
-	}
-
-
 };

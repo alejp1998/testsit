@@ -31,7 +31,7 @@ router.get('/goback',(req,res,next) => {
 });
 
 //Guarda las rutas que no terminen en new,edit,play,session o un Id
-router.get(['/','/author','/tests','/emails','/users','/users/:id(\\+d)/quizzes','/quizzes'], (req,res,next) => {
+router.get(['/','/author','/tests','/tests/:subject','/emails','/users','/users/:id(\\+d)/quizzes','/quizzes'], (req,res,next) => {
     req.session.backUrl = req.url;
     next();
 });
@@ -97,8 +97,6 @@ router.get('/quizzes/new',ssnCtlr.loginRequired, ssnCtlr.adminOrEditorRequired, 
 
 /*PUT quizzes*/
 router.put('/quizzes/:quizId(\\d+)',ssnCtlr.loginRequired, ssnCtlr.adminOrEditorRequired, quizCtlr.updateQuiz);
-router.put('/quizzes/randomplay',ssnCtlr.loginRequired, quizCtlr.randomPlay);
-router.put('/quizzes/randomcheck/:quizId(\\d+)',ssnCtlr.loginRequired, quizCtlr.randomCheck);
 router.put('/quizzes/:quizId(\\d+)/check',ssnCtlr.loginRequired, quizCtlr.checkQuiz);
 
 /*POST quizzes*/
