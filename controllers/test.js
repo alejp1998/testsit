@@ -47,7 +47,7 @@ exports.playTest = (req, res, next) => {
 //Se encarga de comprobar que las preguntas del tests son correctas, incorrectas, o no contestadas;
 //a partir del array del test guardado como dato de la sesion, debe dar paso a una vista donde se muestren
 //las preguntas en rojo si hemos fallado y en verde si acertamos, la puntuación total etc
-exports.checkTest = (req, res, next) => {
+exports.checkTest = async (req, res, next) => {
   const test = req.session.test;
   const {subject,testid} = req.params;
 
@@ -58,7 +58,6 @@ exports.checkTest = (req, res, next) => {
   let answers = req.body;
   let N = Object.keys(test.quizzes).length;
 
-  var promises = [];
   for (var i = 0; i < N; i++) {
     var quiz = test.quizzes[i]; 
     var omission,hit,fail = 0;
@@ -77,52 +76,50 @@ exports.checkTest = (req, res, next) => {
       fail = 1;
     }
 
-    var promise = Quiz.findByPk(quiz.id)
-                  .then(quiz => {
-                    quiz.nTries++;
-                    quiz.hits += hit;
-                    quiz.fails += fail;
-                    quiz.omissions += omission;
-                    quiz['n'+answer_sel]++;
-                    quiz.save({fields: ["nTries","hits","fails","omissions","n"+answer_sel]})
-                  });
-    promises.push(promise);
+    /*
+    await Quiz.findByPk(quiz.id)
+    .then(quiz => {
+      quiz.nTries++;
+      quiz.hits += hit;
+      quiz.fails += fail;
+      quiz.omissions += omission;
+      quiz['n'+answer_sel]++;
+      quiz.save({fields: ["nTries","hits","fails","omissions","n"+answer_sel]})
+    })
+    */
   }
 
-  Promise.all(promises)
-  .then(() => {
-    Test.findByPk(testid)
-    .then(test => {
-      test.nTries++;
-      test.hits += correct;
-      test.fails += incorrect;
-      test.omissions += nonanswered;
+  Test.findByPk(testid)
+  .then(test_to_update => {
+    test_to_update.nTries++;
+    test_to_update.hits += correct;
+    test_to_update.fails += incorrect;
+    test_to_update.omissions += nonanswered;
 
-      test.save({fields: ["nTries","hits","fails","omissions"]})
-      .then(() => {
-        const userId = req.session.user.id;
-        User.findByPk(userId)
-        .then(user => {
-          user.hits += correct;
-          user.fails += incorrect;
-          user.omissions += nonanswered;
-          user.testsTried++;
-          req.session.user = user;
+    test_to_update.save({fields: ["nTries","hits","fails","omissions"]})
+    .then(() => {
+      const userId = req.session.user.id;
+      User.findByPk(userId)
+      .then(user => {
+        user.hits += correct;
+        user.fails += incorrect;
+        user.omissions += nonanswered;
+        user.testsTried++;
+        req.session.user = user;
 
-          user.save({fields: ["testsTried","hits","fails","omissions"]})
-          .then(() => {
-            Subject.findByPk(subject)
-            .then(subject => {
-              subject.hits += correct;
-              subject.fails += incorrect;
-              subject.omissions += nonanswered;
-              subject.nTries++;
+        user.save({fields: ["testsTried","hits","fails","omissions"]})
+        .then(() => {
+          Subject.findByPk(subject)
+          .then(subject => {
+            subject.hits += correct;
+            subject.fails += incorrect;
+            subject.omissions += nonanswered;
+            subject.nTries++;
 
-              subject.save({fields: ["nTries","hits","fails","omissions"]})
-              .then(() => {
-                subject = subject.subject;
-                res.render('tests/result_test.ejs', {test,answers,subject,correct,incorrect,nonanswered} );
-              });
+            subject.save({fields: ["nTries","hits","fails","omissions"]})
+            .then(() => {
+              subject = subject.subject;
+              res.render('tests/result_test.ejs', {test,answers,subject,correct,incorrect,nonanswered} );
             });
           });
         });
