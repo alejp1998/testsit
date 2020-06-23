@@ -92,8 +92,13 @@ exports.checkTest = async (req, res, next) => {
       quiz['n'+answer_sel]++;
       quiz.save({fields: ["nTries","hits","fails","omissions","n"+answer_sel]})
     });
-    
   }
+
+  //Test stats
+  test.nTries++;
+  test.hits += correct;
+  test.fails += incorrect;
+  test.omissions += nonanswered;
 
   Test.findByPk(testid)
   .then(test_to_update => {
