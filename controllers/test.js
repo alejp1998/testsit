@@ -60,33 +60,33 @@ exports.checkTest = (req, res, next) => {
 
   var promises = [];
   for (var i = 0; i < N; i++) {
-    let quiz = test.quizzes[i]; 
-    let omission,hit,fail = 0;
+    var quiz = test.quizzes[i]; 
+    var omission,hit,fail = 0;
+    var answer_sel = Number(answers['answer'+ i]);
     if(answers['answer'+ i] === '0'){
       test.quizzes[i].result = 'na';
       nonanswered++;
       omission = 1;
-    }else if( Number(test.quizzes[i].answer) === Number(answers['answer'+ i]) ){
+    }else if( Number(test.quizzes[i].answer) === answer_sel ){
       test.quizzes[i].result = 'hit';
       correct++;
       hit = 1;
-    }else if( Number(test.quizzes[i].answer) !== Number(answers['answer'+ i]) ){
+    }else if( Number(test.quizzes[i].answer) !== answer_sel ){
       test.quizzes[i].result = 'fail';
       incorrect++;
       fail = 1;
     }
-    
-    promises.push(
-      Quiz.findByPk(quiz.id)
-      .then(quiz => {
-        quiz.nTries++;
-        quiz.hits += hit;
-        quiz.fails += fail;
-        quiz.omissions += omission;
-        quiz['n'+answers['answer'+ i]]++;
-        quiz.save({fields: ["nTries","hits","fails","omissions","n"+answers['answer'+ i]]})
-      })
-    )
+
+    var promise = Quiz.findByPk(quiz.id)
+                  .then(quiz => {
+                    quiz.nTries++;
+                    quiz.hits += hit;
+                    quiz.fails += fail;
+                    quiz.omissions += omission;
+                    quiz['n'+answer_sel]++;
+                    quiz.save({fields: ["nTries","hits","fails","omissions","n"+answer_sel]})
+                  });
+    promises.push(promise);
   }
 
   Promise.all(promises)
