@@ -20,7 +20,7 @@ module.exports = {
         {   
             testid: 'RDPR-11-2018-1',
             subject: 'RDPR',
-            question: 'El	rendimiento	de	radiación	de	una	antena, cuyo	diagrama	de	radiación	se	ha	medido a	una	distancia	mayor	a	2D²/λ, se	puede	obtener	a	partir	de:',
+            question: 'El rendimiento de	radiación	de	una	antena, cuyo	diagrama	de	radiación	se	ha	medido a	una	distancia	mayor	a	2D²/λ, se	puede	obtener	a	partir	de:',
             answer: 2,
             answer1: 'El área	total	de	la	antena	y	las	pérdidas	de	espacio	libre',
             answer2: 'La densidad	de	potencia	radiada	medida,	la	distancia	de	medida, la	potencia	entregada	a	la	antena y	la	directividad	de	la	antena',
