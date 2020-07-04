@@ -26,7 +26,7 @@ const paginate = (totalItems, itemsPerPage, currentPage, url, param_name) => {
 
     // Number of links to show before and after the current page.
     // In addition to these, the first, last and intermediate links are also shown
-    let neighbours = 2; // items a mostrar alrededor el la pagina actuañ
+    let neighbours = 2; // items a mostrar alrededor el la pagina actual
 
     const html = [];
 
